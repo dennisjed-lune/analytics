@@ -1,51 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lune Analytics Dashboard</title>
-<style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { overflow: hidden; height: 100vh; }
-  iframe { width: 100%; height: 100vh; border: none; }
-  .vpill {
-    position: fixed; top: 14px; left: 62px; z-index: 9999;
-    display: flex; align-items: center; gap: 6px;
-  }
-  .vpill select {
-    background: #1a2332; border: 1px solid #2d3b4d; color: #94a3b8; font-size: 10px; font-weight: 600;
-    padding: 3px 22px 3px 6px; border-radius: 6px; outline: none; cursor: pointer;
-    appearance: none; -webkit-appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
-    background-repeat: no-repeat; background-position: right 6px center;
-    transition: border-color 0.2s;
-  }
-  .vpill select:hover { border-color: #10b981; color: #e2e8f0; }
-</style>
-</head>
-<body>
-<div class="vpill"><select id="vs" onchange="loadVersion(this.value)"></select></div>
-<iframe id="frame"></iframe>
+<html><head><meta charset="UTF-8"><title>Lune Analytics</title>
 <script>
-let versions=[];
-async function init(){
-  try{const r=await fetch('versions.json?t='+Date.now());versions=await r.json()}
-  catch(e){versions=[{version:'v10',file:'analytics-v10.html',label:'V10'}]}
-  const s=document.getElementById('vs');
-  s.innerHTML=versions.map(v=>`<option value="${v.file}">${v.version}</option>`).join('');
-  const hash=location.hash.replace('#','');
-  const hv=versions.find(v=>v.version===hash);
-  const t=hv||versions[versions.length-1];
-  s.value=t.file;
-  loadVersion(t.file);
-}
-function loadVersion(f){
-  if(!f)return;
-  const v=versions.find(vv=>vv.file===f);
-  if(v)location.hash=v.version;
-  document.getElementById('frame').src=f;
-}
-init();
+(async()=>{
+  try{
+    const r=await fetch('versions.json?t='+Date.now());
+    const v=await r.json();
+    const hash=location.hash.replace('#','');
+    const match=v.find(x=>x.version===hash);
+    location.replace(match?match.file:v[v.length-1].file);
+  }catch(e){location.replace('analytics-v1.html')}
+})();
 </script>
-</body>
-</html>
+</head><body></body></html>
