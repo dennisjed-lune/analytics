@@ -1,4 +1,14 @@
 [
-  {"version": "v1", "file": "analytics-v1.html"},
-  {"version": "v1.2 — Treemap", "file": "analytics-v1_2.html"}
+  {
+    "version": "v1",
+    "file": "analytics-v1.html"
+  },
+  {
+    "version": "v1.2 — Treemap",
+    "file": "analytics-v1_2.html"
+  },
+  {
+    "version": "v1.3 — Stacked Chart + Explorer",
+    "file": "analytics-v1_3.html"
+  }
 ]
