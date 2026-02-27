@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lune Analytics — V2</title>
+<title>Lune Analytics — V1.2 (Treemap)</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
@@ -383,19 +383,24 @@ function go(pg,d){
   setTimeout(()=>initPage(pg,d),30);
 }
 
-// ===== PAGE: OVERVIEW =====
+// ===== PAGE: OVERVIEW (v1.2 — Treemap) =====
 function pgOverview(){return `
-<div class="ph"><div><h1>Dashboard</h1><p>Brand & category spend analytics</p></div></div>
-<div class="fbar">
-  <span class="fl">Period</span><div class="vtabs" id="periodTabs"><button class="vtab" onclick="setOvPeriod(1,this)">1M</button><button class="vtab" onclick="setOvPeriod(3,this)">3M</button><button class="vtab" onclick="setOvPeriod(6,this)">6M</button><button class="vtab active" onclick="setOvPeriod(12,this)">1Y</button></div>
-  <div style="width:1px;height:24px;background:var(--bd);margin:0 4px"></div>
-  <span class="fl">View</span><div class="vtabs" id="granTabs"><button class="vtab" onclick="setOvGran('daily',this)">Daily</button><button class="vtab" onclick="setOvGran('weekly',this)">Weekly</button><button class="vtab active" onclick="setOvGran('monthly',this)">Monthly</button></div>
-  <div style="width:1px;height:24px;background:var(--bd);margin:0 4px"></div>
-  <span class="fl">Account</span><select class="fi" style="width:130px"><option value="">All Accounts</option><option>Current</option><option>Savings</option><option>Fixed Deposit</option><option>Credit Card</option></select>
-  <span class="fl">Card</span><select class="fi" style="width:150px"><option value="">All Cards</option><option>Visa Infinite</option><option>Visa Signature</option><option>Visa Platinum</option><option>MC Titanium</option><option>MC Platinum</option><option>Debit Card</option></select>
-  <span class="fl">Country</span><select class="fi" style="width:110px"><option value="">All</option><option>UAE</option><option>KSA</option><option>Bahrain</option><option>Egypt</option><option>India</option><option>UK</option><option>USA</option></select>
+<div class="ph"><div><h1>Dashboard</h1><p>Brand & category spend analytics</p></div>
+  <div style="display:flex;align-items:center;gap:10px">
+    <span style="font-size:11px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.5px">View by</span>
+    <div class="vtabs" id="tmMetricTabs">
+      <button class="vtab active" onclick="setTmMetric('spend',this)">Spend</button>
+      <button class="vtab" onclick="setTmMetric('customers',this)">Customers</button>
+      <button class="vtab" onclick="setTmMetric('transactions',this)">Transactions</button>
+    </div>
+    <div style="width:1px;height:24px;background:var(--bd);margin:0 4px"></div>
+    <div class="vtabs" id="tmModeTabs">
+      <button class="vtab active" onclick="setTmMode('categories',this)">Categories</button>
+      <button class="vtab" onclick="setTmMode('brands',this)">Brands</button>
+    </div>
+  </div>
 </div>
-<div class="ct">
+<div class="ct" style="padding-top:16px">
   <div class="kr">
     <div class="kp"><div class="kl">Total Customers</div><div class="kv">229,400</div></div>
     <div class="kp"><div class="kl">Total Transactions</div><div class="kv">18.4M</div></div>
@@ -403,23 +408,189 @@ function pgOverview(){return `
     <div class="kp"><div class="kl">Avg Spend / Customer</div><div class="kv">737<small>AED</small></div></div>
     <div class="kp" style="cursor:pointer" onclick="go('insights')"><div class="kl">Cross-Sell Opportunity</div><div class="kv" style="color:var(--ad)">${fmtN(insights.filter(i=>i.action==='crosssell'&&i.xstatus==='active').reduce((a,x)=>a+(x.rev||0),0))}<small>AED/mo</small></div></div>
   </div>
-  <div class="g2">
-    <div class="card"><div style="display:flex;align-items:flex-start;justify-content:space-between"><div><div class="card-t">Spend Over Time</div><div class="card-s" id="ch1sub">Monthly · Last 12 months · Click any bar to drill in</div></div><div style="text-align:right"><div style="font-size:22px;font-weight:700;font-family:var(--m);color:var(--ad)" id="ch1total">169,100 AED</div><div style="font-size:10px;color:var(--t3);text-transform:uppercase">Total Spend</div></div></div><div class="chb"><canvas id="ch1"></canvas><div class="hint">Click a bar →</div></div></div>
-    <div class="card"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px"><div class="card-t">Market Share</div><div class="vtabs" id="wdTabs"><button class="vtab active" onclick="setWD('cat',this)">By Category</button><button class="vtab" onclick="setWD('brand',this)">Top 10 Brands</button></div></div><div style="display:flex;align-items:center;gap:4px;margin-bottom:14px"><span style="font-size:11px;color:var(--t3);font-weight:500">Show:</span><div class="vtabs" id="wmTabs"><button class="vtab active" onclick="setWM('spend',this)">Spend</button><button class="vtab" onclick="setWM('frequency',this)">Frequency</button><button class="vtab" onclick="setWM('customers',this)">Customers</button></div></div><div class="chb"><canvas id="ch2"></canvas><div class="hint">Click a slice →</div></div></div>
-  </div>
-  <div class="g2">
-    <div class="card"><div style="display:flex;align-items:center;justify-content:space-between"><div><div class="card-t">💰 Cross-Sell Opportunities</div><div class="card-s">Untapped revenue — click bar to drill in</div></div><span class="tha" onclick="go('insights')">View All →</span></div><div class="chb"><canvas id="ch3"></canvas></div></div>
-    <div class="card"><div class="card-t">Brand Movers — Spend Change</div><div class="card-s">Biggest growth & decline vs previous period. Click for detail.</div><div class="chb"><canvas id="ch4"></canvas></div></div>
-  </div>
-  <div class="g2">
-    <div class="tc"><div class="th2"><span class="tht">Top Brands</span><span class="tha" onclick="go('brands')">View All →</span></div>
-      <table><thead><tr><th>Brand</th><th>Spend</th><th>Txns</th><th>Customers</th><th>Share</th></tr></thead><tbody>${brands.slice(0,5).map((b,i)=>`<tr onclick="go('brand-detail',${i})"><td><div class="bc2"><div class="bi" style="background:${b.cl}">${b.n[0]}</div><span class="bn">${b.n}</span></div></td><td>${fmtN(b.s)}</td><td>${fmtN(b.t)}</td><td>${fmtN(b.c)}</td><td><div class="sb"><div class="sf2" style="width:${(b.s/totS*100)*1.8}px"></div><span class="st2">${(b.s/totS*100).toFixed(1)}%</span></div></td></tr>`).join('')}</tbody></table>
+
+  <!-- Treemap Card -->
+  <div class="card" style="padding:0;overflow:hidden;margin-bottom:20px">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px 12px;border-bottom:1px solid var(--bd)">
+      <div>
+        <div class="card-t" id="tmTitle">Spend by Category</div>
+        <div class="card-s" style="margin-bottom:0" id="tmSub">All categories · Last 12 months · Click a tile to explore</div>
+      </div>
+      <div id="tmTotalBadge" style="font-size:20px;font-weight:700;font-family:var(--m);color:var(--ad)">169.1M AED</div>
     </div>
-    <div class="tc"><div class="th2"><span class="tht">Top Categories</span><span class="tha" onclick="go('categories')">View All →</span></div>
-      <table><thead><tr><th>Category</th><th>Spend</th><th>Txns</th><th>Customers</th><th>Share</th></tr></thead><tbody>${cats.slice(0,5).map((c,i)=>`<tr onclick="go('cat-detail',${i})"><td><div class="bc2"><div class="bi" style="background:${c.cl}">${c.n[0]}</div><span class="bn">${c.n}</span></div></td><td>${fmtN(c.s)}</td><td>${fmtN(c.t)}</td><td>${fmtN(c.c)}</td><td><div class="sb"><div class="sf2" style="width:${(c.s/catTot*100)*1.8}px"></div><span class="st2">${(c.s/catTot*100).toFixed(1)}%</span></div></td></tr>`).join('')}</tbody></table>
+    <div id="treemap-container" style="position:relative;width:100%;height:520px;background:#fafbfc;cursor:pointer"></div>
+    <div id="tmTooltip" style="position:fixed;background:rgba(20,22,28,.92);color:#fff;font-size:12px;padding:10px 14px;border-radius:8px;pointer-events:none;z-index:999;display:none;min-width:160px;line-height:1.6;box-shadow:0 4px 20px rgba(0,0,0,.3)"></div>
+  </div>
+
+  <!-- Scrollable tables below -->
+  <div id="tmTables">
+    <div class="g2">
+      <div class="tc" id="tmBrandTable">
+        <div class="th2"><span class="tht">Top Brands</span><span class="tha" onclick="go('brands')">View All →</span></div>
+        <table><thead><tr><th>Brand</th><th>Spend</th><th>Txns</th><th>Customers</th><th>Share</th></tr></thead>
+        <tbody>${brands.slice(0,8).map((b,i)=>`<tr id="brow-${i}" onclick="go('brand-detail',${i})" style="transition:background .15s"><td><div class="bc2"><div class="bi" style="background:${b.cl}">${b.n[0]}</div><span class="bn">${b.n}</span></div></td><td>${fmtN(b.s)}</td><td>${fmtN(b.t)}</td><td>${fmtN(b.c)}</td><td><div class="sb"><div class="sf2" style="width:${(b.s/totS*100)*2}px"></div><span class="st2">${(b.s/totS*100).toFixed(1)}%</span></div></td></tr>`).join('')}</tbody></table>
+      </div>
+      <div class="tc" id="tmCatTable">
+        <div class="th2"><span class="tht">Top Categories</span><span class="tha" onclick="go('categories')">View All →</span></div>
+        <table><thead><tr><th>Category</th><th>Spend</th><th>Txns</th><th>Customers</th><th>Share</th></tr></thead>
+        <tbody>${cats.slice(0,8).map((c,i)=>`<tr id="crow-${i}" onclick="go('cat-detail',${i})" style="transition:background .15s"><td><div class="bc2"><div class="bi" style="background:${c.cl}">${c.n[0]}</div><span class="bn">${c.n}</span></div></td><td>${fmtN(c.s)}</td><td>${fmtN(c.t)}</td><td>${fmtN(c.c)}</td><td><div class="sb"><div class="sf2" style="width:${(c.s/catTot*100)*2}px"></div><span class="st2">${(c.s/catTot*100).toFixed(1)}%</span></div></td></tr>`).join('')}</tbody></table>
+      </div>
     </div>
   </div>
 </div>`}
+
+// ===== TREEMAP ENGINE =====
+let tmMetric='spend', tmMode='categories';
+
+function setTmMetric(m,el){
+  tmMetric=m;
+  el.parentElement.querySelectorAll('.vtab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  buildTreemap();
+}
+function setTmMode(m,el){
+  tmMode=m;
+  el.parentElement.querySelectorAll('.vtab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  buildTreemap();
+}
+
+function buildTreemap(){
+  const container=document.getElementById('treemap-container');
+  if(!container)return;
+
+  const metricKey=tmMetric==='spend'?'s':tmMetric==='customers'?'c':'t';
+  const metricLabel=tmMetric==='spend'?'Spend':tmMetric==='customers'?'Customers':'Transactions';
+  const metricFmt=v=>tmMetric==='spend'?fmtN(v)+' AED':fmtN(v);
+
+  let items=[];
+  if(tmMode==='categories'){
+    items=cats.map((c,i)=>({name:c.n,value:c[metricKey],color:c.cl,idx:i,type:'cat',extra:`${fmtN(c.c)} customers · ${fmtN(c.t)} txns`}));
+    document.getElementById('tmTitle').textContent=`${metricLabel} by Category`;
+  } else {
+    // Show top 30 brands by chosen metric
+    items=[...brands].sort((a,b)=>b[metricKey]-a[metricKey]).slice(0,30).map(b=>{
+      const idx=brands.indexOf(b);
+      return {name:b.n,value:b[metricKey],color:b.cl,idx,type:'brand',extra:`${b.cat} · ${fmtN(b.c)} customers`};
+    });
+    document.getElementById('tmTitle').textContent=`${metricLabel} by Brand (Top 30)`;
+  }
+
+  const total=items.reduce((a,b)=>a+b.value,0);
+  const totalFmt=tmMetric==='spend'?(total/1000000).toFixed(1)+'M AED':fmtN(total);
+  document.getElementById('tmTotalBadge').textContent=totalFmt;
+  document.getElementById('tmSub').textContent=`${items.length} ${tmMode} · Last 12 months · Click to explore`;
+
+  // Sort descending for squarify
+  items.sort((a,b)=>b.value-a.value);
+
+  const W=container.clientWidth;
+  const H=container.clientHeight;
+
+  const rects=squarify(items,{x:0,y:0,w:W,h:H},total);
+
+  container.innerHTML='';
+  const tooltip=document.getElementById('tmTooltip');
+
+  rects.forEach(r=>{
+    if(r.w<4||r.h<4)return;
+    const div=document.createElement('div');
+    div.style.cssText=`position:absolute;left:${r.x}px;top:${r.y}px;width:${r.w}px;height:${r.h}px;background:${r.item.color};border:1.5px solid rgba(255,255,255,.25);box-sizing:border-box;overflow:hidden;cursor:pointer;transition:filter .15s`;
+
+    // Label
+    const pct=(r.item.value/total*100).toFixed(1);
+    const showName=r.w>60&&r.h>30;
+    const showVal=r.w>80&&r.h>50;
+
+    if(showName){
+      const lbl=document.createElement('div');
+      lbl.style.cssText=`position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:6px;text-align:center`;
+      const fontSize=Math.min(14,Math.max(9,Math.sqrt(r.w*r.h)*0.065));
+      lbl.innerHTML=`<div style="font-weight:700;color:#fff;font-size:${fontSize}px;line-height:1.2;text-shadow:0 1px 3px rgba(0,0,0,.4);max-width:100%;overflow:hidden;word-break:break-word">${r.item.name}</div>${showVal?`<div style="font-size:${Math.max(8,fontSize-3)}px;color:rgba(255,255,255,.8);margin-top:3px;text-shadow:0 1px 2px rgba(0,0,0,.4)">${metricFmt(r.item.value)}</div><div style="font-size:${Math.max(7,fontSize-4)}px;color:rgba(255,255,255,.65);text-shadow:0 1px 2px rgba(0,0,0,.3)">${pct}%</div>`:''}`;
+      div.appendChild(lbl);
+    }
+
+    // Hover
+    div.addEventListener('mouseenter',e=>{
+      div.style.filter='brightness(1.15)';
+      tooltip.style.display='block';
+      tooltip.innerHTML=`<div style="font-weight:700;font-size:13px;margin-bottom:4px">${r.item.name}</div><div style="color:rgba(255,255,255,.7);font-size:11px">${r.item.extra}</div><div style="margin-top:6px;font-size:12px"><span style="color:rgba(255,255,255,.6)">${metricLabel}:</span> <b>${metricFmt(r.item.value)}</b></div><div style="font-size:11px;color:rgba(255,255,255,.6)">${pct}% of total</div>`;
+    });
+    div.addEventListener('mousemove',e=>{
+      const tx=Math.min(e.clientX+14,window.innerWidth-180);
+      const ty=Math.min(e.clientY+14,window.innerHeight-120);
+      tooltip.style.left=tx+'px';tooltip.style.top=ty+'px';
+    });
+    div.addEventListener('mouseleave',()=>{div.style.filter='';tooltip.style.display='none'});
+
+    // Click → navigate + highlight table row
+    div.addEventListener('click',()=>{
+      if(r.item.type==='cat'){
+        // Scroll to and highlight table row
+        const row=document.getElementById('crow-'+r.item.idx);
+        if(row){row.scrollIntoView({behavior:'smooth',block:'center'});row.style.background='var(--al)';setTimeout(()=>row.style.background='',1500);}
+      } else {
+        const row=document.getElementById('brow-'+r.item.idx);
+        if(row){row.scrollIntoView({behavior:'smooth',block:'center'});row.style.background='var(--al)';setTimeout(()=>row.style.background='',1500);}
+      }
+    });
+
+    container.appendChild(div);
+  });
+}
+
+// Squarify treemap algorithm
+function squarify(items,bounds,total){
+  const rects=[];
+  const vals=items.map(it=>it.value);
+  _squarify(vals,items,bounds,total,rects);
+  return rects;
+}
+function _squarify(vals,items,b,total,rects){
+  if(!vals.length)return;
+  const {x,y,w,h}=b;
+  const area=w*h;
+  // Normalize values to area
+  const norm=vals.map(v=>v/total*area);
+  // Find best split
+  let bestRatio=Infinity,bestN=1;
+  for(let n=1;n<=norm.length;n++){
+    const row=norm.slice(0,n);
+    const rowSum=row.reduce((a,b)=>a+b,0);
+    const shorter=Math.min(w,h);
+    const ratio=Math.max(...row.map(v=>{const rowLen=rowSum/shorter;return Math.max(rowLen*rowLen*v/rowSum/rowSum,rowSum*rowSum/v/rowLen/rowLen)}));
+    if(ratio<=bestRatio){bestRatio=ratio;bestN=n;}else break;
+  }
+  const row=norm.slice(0,bestN);
+  const rowItems=items.slice(0,bestN);
+  const rowSum=row.reduce((a,b)=>a+b,0);
+  // Lay out row
+  if(w<=h){
+    // Horizontal strip at top
+    const rowH=rowSum/w;
+    let cx=x;
+    row.forEach((v,i)=>{
+      const rw=v/rowSum*w;
+      rects.push({x:cx,y,w:rw,h:rowH,item:rowItems[i]});
+      cx+=rw;
+    });
+    if(vals.length>bestN){
+      _squarify(vals.slice(bestN),items.slice(bestN),{x,y:y+rowH,w,h:h-rowH},total,rects);
+    }
+  } else {
+    // Vertical strip at left
+    const rowW=rowSum/h;
+    let cy=y;
+    row.forEach((v,i)=>{
+      const rh=v/rowSum*h;
+      rects.push({x,y:cy,w:rowW,h:rh,item:rowItems[i]});
+      cy+=rh;
+    });
+    if(vals.length>bestN){
+      _squarify(vals.slice(bestN),items.slice(bestN),{x:x+rowW,y,w:w-rowW,h},total,rects);
+    }
+  }
+}
 
 function showSubPills(catName,containerId){
   const box=document.getElementById(containerId);if(!box)return;
@@ -1176,15 +1347,9 @@ const copts={responsive:true,maintainAspectRatio:false,plugins:{legend:{display:
 
 function initPage(pg,d){
   if(pg==='overview'){
-    buildSpendChart();
-    buildWallet();
-    // Cross-sell from insights
-    const xsSorted=insights.filter(i=>i.action==='crosssell'&&i.xstatus==='active').sort((a,b)=>(b.rev||0)-(a.rev||0)).slice(0,8);
-    const xsCols=['#14b8a6cc','#8b5cf6cc','#f59e0bcc','#0284c7cc','#10b981cc','#ec4899cc','#ef4444cc','#ea580ccc'];
-    charts.c3=new Chart(document.getElementById('ch3'),{type:'bar',data:{labels:xsSorted.map(x=>x.nm),datasets:[{label:'Revenue Uplift',data:xsSorted.map(x=>x.rev||0),backgroundColor:xsSorted.map((_,i)=>xsCols[i%xsCols.length]),borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>{const x=xsSorted[c.dataIndex];return `${fmtN(x.cu)} customers · ${fmtN(x.rev||0)} AED/mo potential`}}}},scales:{y:{grid:{display:false},ticks:{font:{size:9.5},callback:function(v,i){const l=this.getLabelForValue(v);return l.length>30?l.substring(0,30)+'…':l}}},x:{beginAtZero:true,grid:{color:'#f0f1f3'},ticks:{font:{size:10,family:'JetBrains Mono'},callback:v=>fmtN(v)}}},onClick:(e,el)=>{if(el.length)go('insights')}}});
-    const movers=brands.map(b=>({n:b.n,cl:b.cl,chg:Math.floor(Math.random()*60-20),idx:brands.indexOf(b)})).sort((a,b)=>b.chg-a.chg);
-    const top5=movers.slice(0,5);const bot3=movers.slice(-3).reverse();const moverData=[...top5,...bot3];
-    charts.c4=new Chart(document.getElementById('ch4'),{type:'bar',data:{labels:moverData.map(m=>m.n),datasets:[{data:moverData.map(m=>m.chg),backgroundColor:moverData.map(m=>m.chg>=0?'#10b981':'#ef4444'),borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>(ctx.raw>=0?'+':'')+ctx.raw+'% vs previous period'}}},scales:{y:{grid:{display:false},ticks:{font:{size:10}}},x:{grid:{color:'#f0f1f3'},ticks:{font:{size:10,family:'JetBrains Mono'},callback:v=>v+'%'}}},onClick:(e,el)=>{if(el.length)go('brand-detail',moverData[el[0].index].idx)}}});
+    // Reset metric/mode state
+    tmMetric='spend'; tmMode='categories';
+    buildTreemap();
   }
   if(pg==='brands')filterBrands();
   if(pg==='categories')filterCats();
