@@ -385,21 +385,7 @@ function go(pg,d){
 
 // ===== PAGE: OVERVIEW (v1.2 — Treemap) =====
 function pgOverview(){return `
-<div class="ph"><div><h1>Dashboard</h1><p>Brand & category spend analytics</p></div>
-  <div style="display:flex;align-items:center;gap:10px">
-    <span style="font-size:11px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.5px">View by</span>
-    <div class="vtabs" id="tmMetricTabs">
-      <button class="vtab active" onclick="setTmMetric('spend',this)">Spend</button>
-      <button class="vtab" onclick="setTmMetric('customers',this)">Customers</button>
-      <button class="vtab" onclick="setTmMetric('transactions',this)">Transactions</button>
-    </div>
-    <div style="width:1px;height:24px;background:var(--bd);margin:0 4px"></div>
-    <div class="vtabs" id="tmModeTabs">
-      <button class="vtab active" onclick="setTmMode('categories',this)">Categories</button>
-      <button class="vtab" onclick="setTmMode('brands',this)">Brands</button>
-    </div>
-  </div>
-</div>
+<div class="ph"><div><h1>Dashboard</h1><p>Brand & category spend analytics</p></div></div>
 <div class="ct" style="padding-top:16px">
   <div class="kr">
     <div class="kp"><div class="kl">Total Customers</div><div class="kv">229,400</div></div>
@@ -411,15 +397,44 @@ function pgOverview(){return `
 
   <!-- Treemap Card -->
   <div class="card" style="padding:0;overflow:hidden;margin-bottom:20px">
-    <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px 12px;border-bottom:1px solid var(--bd)">
+
+    <!-- Card header: title + total -->
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px 0 20px;">
       <div>
         <div class="card-t" id="tmTitle">Spend by Category</div>
-        <div class="card-s" style="margin-bottom:0" id="tmSub">All categories · Last 12 months · Click a tile to explore</div>
+        <div class="card-s" style="margin-bottom:0" id="tmSub">All categories · Last 12 months · Click a tile to drill in</div>
       </div>
       <div id="tmTotalBadge" style="font-size:20px;font-weight:700;font-family:var(--m);color:var(--ad)">169.1M AED</div>
     </div>
-    <div id="treemap-container" style="position:relative;width:100%;height:520px;background:#fafbfc;cursor:pointer"></div>
-    <div id="tmTooltip" style="position:fixed;background:rgba(20,22,28,.92);color:#fff;font-size:12px;padding:10px 14px;border-radius:8px;pointer-events:none;z-index:999;display:none;min-width:160px;line-height:1.6;box-shadow:0 4px 20px rgba(0,0,0,.3)"></div>
+
+    <!-- Controls row: big mode toggle + metric tabs -->
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 20px 14px;border-bottom:1px solid var(--bd);">
+
+      <!-- Mode toggle — big pill buttons -->
+      <div style="display:flex;background:var(--bg2);border-radius:10px;padding:3px;gap:2px" id="tmModeTabs">
+        <button onclick="setTmMode('categories',this)" id="modeCategories"
+          style="padding:8px 22px;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;transition:all .15s;background:var(--ad);color:#fff;letter-spacing:.1px">
+          ▦ Categories
+        </button>
+        <button onclick="setTmMode('brands',this)" id="modeBrands"
+          style="padding:8px 22px;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;transition:all .15s;background:transparent;color:var(--t2)">
+          ◈ Brands
+        </button>
+      </div>
+
+      <!-- Metric tabs — smaller, right-aligned -->
+      <div style="display:flex;align-items:center;gap:6px">
+        <span style="font-size:11px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.5px;margin-right:4px">Metric</span>
+        <div class="vtabs" id="tmMetricTabs">
+          <button class="vtab active" onclick="setTmMetric('spend',this)">Spend</button>
+          <button class="vtab" onclick="setTmMetric('customers',this)">Customers</button>
+          <button class="vtab" onclick="setTmMetric('transactions',this)">Transactions</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="treemap-container" style="position:relative;width:100%;height:600px;background:#f8f9fa;overflow:hidden"></div>
+    <div id="tmTooltip" style="position:fixed;background:rgba(20,22,28,.92);color:#fff;font-size:12px;padding:12px 16px;border-radius:10px;pointer-events:none;z-index:999;display:none;min-width:180px;line-height:1.6;box-shadow:0 8px 32px rgba(0,0,0,.3)"></div>
   </div>
 
   <!-- Scrollable tables below -->
@@ -442,6 +457,50 @@ function pgOverview(){return `
 // ===== TREEMAP ENGINE =====
 let tmMetric='spend', tmMode='categories';
 
+// Carefully chosen palette — each colour is distinct, readable with white text
+// Slightly desaturated/mid-tone so text pops at any tile size
+const CAT_COLORS={
+  'Household':            '#6d28d9',
+  'Travel':               '#0369a1',
+  'Shopping':             '#c2410c',
+  'Groceries':            '#15803d',
+  'Dining':               '#b45309',
+  'Financial Services':   '#be123c',
+  'Transportation':       '#5b21b6',
+  'Wellness':             '#0f766e',
+  'Entertainment':        '#be185d',
+  'Education':            '#3730a3',
+  'Insurance':            '#9a3412',
+  'Loans':                '#991b1b',
+  'Government Services':  '#374151',
+  'Savings & Investments':'#0e7490',
+  'Charity & Gifts':      '#9d174d',
+  'Services':             '#334155',
+  'Transfer':             '#065f46',
+  'Income':               '#3f6212',
+};
+
+function getTileColor(name, brandHex){
+  const base = CAT_COLORS[name] || brandHex || '#475569';
+  const hex = base.replace('#','');
+  const r = parseInt(hex.slice(0,2),16);
+  const g = parseInt(hex.slice(2,4),16);
+  const b = parseInt(hex.slice(4,6),16);
+  // Slightly lightened version for hover
+  const lr = Math.min(255,Math.round(r*1.15));
+  const lg = Math.min(255,Math.round(g*1.15));
+  const lb = Math.min(255,Math.round(b*1.15));
+  return {
+    bg:     base,                           // solid saturated bg
+    hover:  `rgb(${lr},${lg},${lb})`,       // slightly lighter on hover
+    accent: `rgba(255,255,255,0.25)`,       // white accent bar
+    txt:    '#ffffff',                      // always white text
+    txtDim: 'rgba(255,255,255,0.65)',       // dimmed white for secondary
+    txtFaint:'rgba(255,255,255,0.4)',       // faint white for tertiary
+    border: `rgba(0,0,0,0.08)`
+  };
+}
+
 function setTmMetric(m,el){
   tmMetric=m;
   el.parentElement.querySelectorAll('.vtab').forEach(t=>t.classList.remove('active'));
@@ -450,145 +509,239 @@ function setTmMetric(m,el){
 }
 function setTmMode(m,el){
   tmMode=m;
-  el.parentElement.querySelectorAll('.vtab').forEach(t=>t.classList.remove('active'));
-  el.classList.add('active');
+  // Update pill button styles
+  const catBtn=document.getElementById('modeCategories');
+  const brdBtn=document.getElementById('modeBrands');
+  if(catBtn&&brdBtn){
+    if(m==='categories'){
+      catBtn.style.cssText='padding:8px 22px;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;transition:all .15s;background:var(--ad);color:#fff;letter-spacing:.1px';
+      brdBtn.style.cssText='padding:8px 22px;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;transition:all .15s;background:transparent;color:var(--t2)';
+    } else {
+      brdBtn.style.cssText='padding:8px 22px;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;transition:all .15s;background:var(--ad);color:#fff;letter-spacing:.1px';
+      catBtn.style.cssText='padding:8px 22px;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;transition:all .15s;background:transparent;color:var(--t2)';
+    }
+  }
   buildTreemap();
 }
 
-function buildTreemap(){
-  const container=document.getElementById('treemap-container');
-  if(!container)return;
+function fmtTmVal(v){
+  if(tmMetric==='spend'){
+    if(v>=1000000) return (v/1000000).toFixed(1)+'M';
+    if(v>=1000) return (v/1000).toFixed(0)+'K';
+    return v.toLocaleString();
+  }
+  if(v>=1000000) return (v/1000000).toFixed(1)+'M';
+  if(v>=1000) return (v/1000).toFixed(0)+'K';
+  return v.toLocaleString();
+}
 
-  const metricKey=tmMetric==='spend'?'s':tmMetric==='customers'?'c':'t';
-  const metricLabel=tmMetric==='spend'?'Spend':tmMetric==='customers'?'Customers':'Transactions';
-  const metricFmt=v=>tmMetric==='spend'?fmtN(v)+' AED':fmtN(v);
+function buildTreemap(){
+  const container = document.getElementById('treemap-container');
+  if(!container) return;
+
+  const metricKey = tmMetric==='spend'?'s': tmMetric==='customers'?'c':'t';
+  const metricLabel = tmMetric==='spend'?'Spend': tmMetric==='customers'?'Customers':'Transactions';
+  const metricUnit = tmMetric==='spend'?' AED':'';
 
   let items=[];
   if(tmMode==='categories'){
-    items=cats.map((c,i)=>({name:c.n,value:c[metricKey],color:c.cl,idx:i,type:'cat',extra:`${fmtN(c.c)} customers · ${fmtN(c.t)} txns`}));
-    document.getElementById('tmTitle').textContent=`${metricLabel} by Category`;
+    items = cats.map((c,i)=>({
+      name:c.n, value:c[metricKey], colorHex:c.cl, idx:i, type:'cat',
+      sub1: fmtN(c.c)+' customers',
+      sub2: fmtN(c.t)+' txns',
+    }));
+    document.getElementById('tmTitle').textContent = metricLabel+' by Category';
   } else {
-    // Show top 30 brands by chosen metric
-    items=[...brands].sort((a,b)=>b[metricKey]-a[metricKey]).slice(0,30).map(b=>{
-      const idx=brands.indexOf(b);
-      return {name:b.n,value:b[metricKey],color:b.cl,idx,type:'brand',extra:`${b.cat} · ${fmtN(b.c)} customers`};
+    items = [...brands].sort((a,b)=>b[metricKey]-a[metricKey]).slice(0,35).map(b=>{
+      const idx = brands.indexOf(b);
+      return {name:b.n, value:b[metricKey], colorHex:b.cl, idx, type:'brand',
+        sub1:b.cat, sub2:fmtN(b.c)+' customers'};
     });
-    document.getElementById('tmTitle').textContent=`${metricLabel} by Brand (Top 30)`;
+    document.getElementById('tmTitle').textContent = metricLabel+' by Brand (Top 35)';
   }
 
-  const total=items.reduce((a,b)=>a+b.value,0);
-  const totalFmt=tmMetric==='spend'?(total/1000000).toFixed(1)+'M AED':fmtN(total);
-  document.getElementById('tmTotalBadge').textContent=totalFmt;
-  document.getElementById('tmSub').textContent=`${items.length} ${tmMode} · Last 12 months · Click to explore`;
+  const total = items.reduce((a,b)=>a+b.value,0);
+  document.getElementById('tmTotalBadge').textContent =
+    tmMetric==='spend' ? (total/1000000).toFixed(1)+'M AED' : fmtN(total);
+  document.getElementById('tmSub').textContent =
+    `${items.length} ${tmMode} · last 12 months · hover for details · click to explore`;
 
-  // Sort descending for squarify
   items.sort((a,b)=>b.value-a.value);
 
-  const W=container.clientWidth;
-  const H=container.clientHeight;
+  const W = container.clientWidth;
+  const H = container.clientHeight;
+  const GAP = 2; // gap between tiles in px
 
-  const rects=squarify(items,{x:0,y:0,w:W,h:H},total);
+  // ---- Proper squarify that guarantees full coverage ----
+  const rects = [];
+  squarifyFill(items, 0, 0, W, H, total, rects);
 
   container.innerHTML='';
-  const tooltip=document.getElementById('tmTooltip');
+  const tooltip = document.getElementById('tmTooltip');
 
   rects.forEach(r=>{
-    if(r.w<4||r.h<4)return;
-    const div=document.createElement('div');
-    div.style.cssText=`position:absolute;left:${r.x}px;top:${r.y}px;width:${r.w}px;height:${r.h}px;background:${r.item.color};border:1.5px solid rgba(255,255,255,.25);box-sizing:border-box;overflow:hidden;cursor:pointer;transition:filter .15s`;
+    const tw = r.w - GAP;
+    const th = r.h - GAP;
+    if(tw < 4 || th < 4) return;
 
-    // Label
-    const pct=(r.item.value/total*100).toFixed(1);
-    const showName=r.w>60&&r.h>30;
-    const showVal=r.w>80&&r.h>50;
+    const {bg, hover, txt, txtDim, txtFaint} = getTileColor(r.item.name, r.item.colorHex);
+    const pct = (r.item.value/total*100);
+    const pctStr = pct>=1 ? pct.toFixed(1)+'%' : pct.toFixed(2)+'%';
+
+    const tile = document.createElement('div');
+    tile.style.cssText = `position:absolute;left:${r.x}px;top:${r.y}px;width:${tw}px;height:${th}px;`+
+      `background:${bg};border-radius:4px;`+
+      `box-sizing:border-box;overflow:hidden;cursor:pointer;transition:filter .1s`;
+
+    const PAD = 9;
+    const showName = tw > 44 && th > 24;
+    const showVal  = tw > 65 && th > 42;
+    const showSub  = tw > 85 && th > 64;
 
     if(showName){
-      const lbl=document.createElement('div');
-      lbl.style.cssText=`position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:6px;text-align:center`;
-      const fontSize=Math.min(14,Math.max(9,Math.sqrt(r.w*r.h)*0.065));
-      lbl.innerHTML=`<div style="font-weight:700;color:#fff;font-size:${fontSize}px;line-height:1.2;text-shadow:0 1px 3px rgba(0,0,0,.4);max-width:100%;overflow:hidden;word-break:break-word">${r.item.name}</div>${showVal?`<div style="font-size:${Math.max(8,fontSize-3)}px;color:rgba(255,255,255,.8);margin-top:3px;text-shadow:0 1px 2px rgba(0,0,0,.4)">${metricFmt(r.item.value)}</div><div style="font-size:${Math.max(7,fontSize-4)}px;color:rgba(255,255,255,.65);text-shadow:0 1px 2px rgba(0,0,0,.3)">${pct}%</div>`:''}`;
-      div.appendChild(lbl);
+      const area = tw * th;
+      // Scale font sizes to tile area — bigger tiles get bigger text
+      const valSize  = Math.min(22, Math.max(11, Math.sqrt(area) * 0.046));
+      const nameSize = Math.min(13, Math.max(9,  Math.sqrt(area) * 0.028));
+      const subSize  = Math.max(8, nameSize - 1);
+
+      const lbl = document.createElement('div');
+      lbl.style.cssText = `position:absolute;top:${PAD}px;left:${PAD}px;right:${PAD}px;bottom:${PAD}px;overflow:hidden`;
+
+      let html = '';
+
+      // Primary: value in large bold mono
+      if(showVal){
+        html += `<div style="font-size:${valSize}px;font-weight:800;color:#fff;`+
+          `line-height:1;font-family:var(--m);letter-spacing:-.4px;`+
+          `white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:3px">`+
+          `${fmtTmVal(r.item.value)}${metricUnit}</div>`;
+      }
+
+      // Secondary: name in white, slightly smaller
+      html += `<div style="font-size:${nameSize}px;font-weight:600;color:rgba(255,255,255,.9);`+
+        `line-height:1.3;overflow:hidden;display:-webkit-box;`+
+        `-webkit-line-clamp:${th>80?2:1};-webkit-box-orient:vertical">${r.item.name}</div>`;
+
+      // Tertiary: sub1 (customers or category)
+      if(showSub){
+        html += `<div style="font-size:${subSize}px;font-weight:500;color:rgba(255,255,255,.55);`+
+          `margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${r.item.sub1}</div>`;
+      }
+
+      lbl.innerHTML = html;
+      tile.appendChild(lbl);
+
+      // % bottom-right on larger tiles — crisp mono
+      if(tw > 100 && th > 68){
+        const pctEl = document.createElement('div');
+        pctEl.style.cssText = `position:absolute;bottom:7px;right:8px;`+
+          `font-size:11px;font-weight:700;font-family:var(--m);color:rgba(255,255,255,.45)`;
+        pctEl.textContent = pctStr;
+        tile.appendChild(pctEl);
+      }
     }
 
-    // Hover
-    div.addEventListener('mouseenter',e=>{
-      div.style.filter='brightness(1.15)';
+    // Hover — lighten + tooltip
+    tile.addEventListener('mouseenter',()=>{
+      tile.style.filter='brightness(1.2)';
       tooltip.style.display='block';
-      tooltip.innerHTML=`<div style="font-weight:700;font-size:13px;margin-bottom:4px">${r.item.name}</div><div style="color:rgba(255,255,255,.7);font-size:11px">${r.item.extra}</div><div style="margin-top:6px;font-size:12px"><span style="color:rgba(255,255,255,.6)">${metricLabel}:</span> <b>${metricFmt(r.item.value)}</b></div><div style="font-size:11px;color:rgba(255,255,255,.6)">${pct}% of total</div>`;
+      tooltip.innerHTML=
+        `<div style="font-weight:700;font-size:13px;margin-bottom:3px">${r.item.name}</div>`+
+        `<div style="color:rgba(255,255,255,.45);font-size:11px;margin-bottom:8px">${r.item.sub1} · ${r.item.sub2||''}</div>`+
+        `<div style="display:flex;gap:20px">`+
+        `<div><div style="font-size:9px;font-weight:600;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.8px;margin-bottom:2px">${metricLabel}</div>`+
+        `<div style="font-size:16px;font-weight:800;font-family:var(--m);color:#fff">${fmtTmVal(r.item.value)}${metricUnit}</div></div>`+
+        `<div><div style="font-size:9px;font-weight:600;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.8px;margin-bottom:2px">Share</div>`+
+        `<div style="font-size:16px;font-weight:800;font-family:var(--m);color:#fff">${pctStr}</div></div>`+
+        `</div>`;
     });
-    div.addEventListener('mousemove',e=>{
-      const tx=Math.min(e.clientX+14,window.innerWidth-180);
-      const ty=Math.min(e.clientY+14,window.innerHeight-120);
-      tooltip.style.left=tx+'px';tooltip.style.top=ty+'px';
+    tile.addEventListener('mousemove',e=>{
+      const tx = Math.min(e.clientX+16, window.innerWidth-240);
+      const ty = Math.min(e.clientY+16, window.innerHeight-120);
+      tooltip.style.left=tx+'px'; tooltip.style.top=ty+'px';
     });
-    div.addEventListener('mouseleave',()=>{div.style.filter='';tooltip.style.display='none'});
+    tile.addEventListener('mouseleave',()=>{
+      tile.style.filter='';
+      tooltip.style.display='none';
+    });
 
-    // Click → navigate + highlight table row
-    div.addEventListener('click',()=>{
-      if(r.item.type==='cat'){
-        // Scroll to and highlight table row
-        const row=document.getElementById('crow-'+r.item.idx);
-        if(row){row.scrollIntoView({behavior:'smooth',block:'center'});row.style.background='var(--al)';setTimeout(()=>row.style.background='',1500);}
-      } else {
-        const row=document.getElementById('brow-'+r.item.idx);
-        if(row){row.scrollIntoView({behavior:'smooth',block:'center'});row.style.background='var(--al)';setTimeout(()=>row.style.background='',1500);}
-      }
+    // Click → navigate directly to detail page
+    tile.addEventListener('click',()=>{
+      if(r.item.type==='cat') go('cat-detail', r.item.idx);
+      else go('brand-detail', r.item.idx);
     });
 
-    container.appendChild(div);
+    container.appendChild(tile);
   });
 }
 
-// Squarify treemap algorithm
-function squarify(items,bounds,total){
-  const rects=[];
-  const vals=items.map(it=>it.value);
-  _squarify(vals,items,bounds,total,rects);
-  return rects;
-}
-function _squarify(vals,items,b,total,rects){
-  if(!vals.length)return;
-  const {x,y,w,h}=b;
-  const area=w*h;
-  // Normalize values to area
-  const norm=vals.map(v=>v/total*area);
-  // Find best split
-  let bestRatio=Infinity,bestN=1;
-  for(let n=1;n<=norm.length;n++){
-    const row=norm.slice(0,n);
-    const rowSum=row.reduce((a,b)=>a+b,0);
-    const shorter=Math.min(w,h);
-    const ratio=Math.max(...row.map(v=>{const rowLen=rowSum/shorter;return Math.max(rowLen*rowLen*v/rowSum/rowSum,rowSum*rowSum/v/rowLen/rowLen)}));
-    if(ratio<=bestRatio){bestRatio=ratio;bestN=n;}else break;
+// ---- Squarify algorithm (Bruls et al.) — guarantees full fill ----
+function squarifyFill(items, x, y, w, h, total, out){
+  if(!items.length) return;
+  if(items.length===1){
+    out.push({x,y,w,h,item:items[0]});
+    return;
   }
-  const row=norm.slice(0,bestN);
-  const rowItems=items.slice(0,bestN);
-  const rowSum=row.reduce((a,b)=>a+b,0);
-  // Lay out row
-  if(w<=h){
-    // Horizontal strip at top
-    const rowH=rowSum/w;
-    let cx=x;
-    row.forEach((v,i)=>{
-      const rw=v/rowSum*w;
-      rects.push({x:cx,y,w:rw,h:rowH,item:rowItems[i]});
-      cx+=rw;
-    });
-    if(vals.length>bestN){
-      _squarify(vals.slice(bestN),items.slice(bestN),{x,y:y+rowH,w,h:h-rowH},total,rects);
+
+  // Scale values to available area
+  const areaScale = (w*h) / total;
+  const scaled = items.map(it=>it.value*areaScale);
+
+  let start=0;
+  let rx=x, ry=y, rw=w, rh=h;
+
+  while(start < scaled.length){
+    const shorter = Math.min(rw,rh);
+    // Try adding items to the current row until aspect ratio worsens
+    let rowEnd = start;
+    let rowSum = 0;
+    let bestAR = Infinity;
+
+    for(let i=start; i<scaled.length; i++){
+      rowSum += scaled[i];
+      const rowThick = rowSum / shorter;
+      // Worst aspect ratio in this row
+      let worstAR = 0;
+      for(let j=start; j<=i; j++){
+        const cellLen = scaled[j] / rowThick;
+        const ar = Math.max(rowThick/cellLen, cellLen/rowThick);
+        if(ar > worstAR) worstAR = ar;
+      }
+      if(worstAR <= bestAR){
+        bestAR = worstAR;
+        rowEnd = i;
+      } else {
+        break;
+      }
     }
-  } else {
-    // Vertical strip at left
-    const rowW=rowSum/h;
-    let cy=y;
-    row.forEach((v,i)=>{
-      const rh=v/rowSum*h;
-      rects.push({x,y:cy,w:rowW,h:rh,item:rowItems[i]});
-      cy+=rh;
-    });
-    if(vals.length>bestN){
-      _squarify(vals.slice(bestN),items.slice(bestN),{x:x+rowW,y,w:w-rowW,h},total,rects);
+
+    // Layout the row [start..rowEnd]
+    let rowTotal = 0;
+    for(let i=start; i<=rowEnd; i++) rowTotal += scaled[i];
+    const thick = rowTotal / shorter;
+
+    if(rw <= rh){
+      // Horizontal row at top of remaining rect
+      let cx = rx;
+      for(let i=start; i<=rowEnd; i++){
+        const cw = (scaled[i]/rowTotal) * rw;
+        out.push({x:cx, y:ry, w:cw, h:thick, item:items[i]});
+        cx += cw;
+      }
+      ry += thick; rh -= thick;
+    } else {
+      // Vertical column at left of remaining rect
+      let cy = ry;
+      for(let i=start; i<=rowEnd; i++){
+        const ch = (scaled[i]/rowTotal) * rh;
+        out.push({x:rx, y:cy, w:thick, h:ch, item:items[i]});
+        cy += ch;
+      }
+      rx += thick; rw -= thick;
     }
+
+    start = rowEnd+1;
   }
 }
 
