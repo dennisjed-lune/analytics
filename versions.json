@@ -12,7 +12,11 @@
     "file": "analytics-v1_4.html"
   },
   {
-    "version": "v1.5 — Pulse Only",
+    "version": "v1.5 — Pulse Portals",
     "file": "analytics-v1_5.html"
+  },
+  {
+    "version": "v1.6 — Merchant & Bank",
+    "file": "analytics-v1_6.html"
   }
 ]

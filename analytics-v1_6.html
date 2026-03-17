@@ -1,0 +1,2300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lune Analytics — V1.4</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<title>Lune Pulse — v1.6</title>
+<style>
+:root{--bg:#f6f7f9;--sf:#fff;--sh:#fafbfc;--bd:#e8eaed;--bl:#f0f1f3;--t1:#1a1d23;--t2:#5f6775;--t3:#8b93a1;--ac:#10b981;--al:#d1fae5;--ad:#059669;--blue:#3b82f6;--bluel:#dbeafe;--orange:#f59e0b;--orangel:#fef3c7;--purple:#8b5cf6;--purplel:#ede9fe;--red:#ef4444;--redl:#fee2e2;--pink:#ec4899;--r:10px;--rs:6px;--rl:14px;--shadow:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);--shadow-lg:0 4px 12px rgba(0,0,0,.08);--f:'DM Sans',-apple-system,sans-serif;--m:'JetBrains Mono',monospace}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--f);background:var(--bg);color:var(--t1);-webkit-font-smoothing:antialiased}
+.app{display:flex;min-height:100vh}
+.sidebar{width:220px;background:var(--t1);padding:24px 0;position:fixed;height:100vh;z-index:100;overflow-y:auto}
+.sidebar-logo{padding:0 20px 28px;font-size:18px;font-weight:700;color:#fff;letter-spacing:-.3px;display:flex;align-items:center;gap:8px}
+.sidebar-logo span{color:var(--ac)}
+.snav a{display:flex;align-items:center;gap:10px;padding:10px 20px;color:#8b93a1;font-size:13.5px;font-weight:500;text-decoration:none;transition:all .15s;cursor:pointer}
+.snav a:hover{color:#c8ccd4;background:rgba(255,255,255,.04)}
+.snav a.active{color:#fff;background:rgba(255,255,255,.08);border-right:2px solid var(--ac)}
+.snav a svg{width:18px;height:18px;opacity:.7;flex-shrink:0}
+.ssec{font-size:10px;font-weight:600;color:#5f6775;letter-spacing:1px;text-transform:uppercase;padding:20px 20px 8px}
+.main{margin-left:220px;flex:1}
+.bc{padding:12px 32px;background:var(--sf);border-bottom:1px solid var(--bd);font-size:12.5px;display:flex;align-items:center;gap:6px;color:var(--t3)}
+.bc a{color:var(--ac);text-decoration:none;cursor:pointer;font-weight:500}.bc a:hover{text-decoration:underline}
+.bc .sep{color:var(--bd)}
+.ph{padding:20px 32px 16px;background:var(--sf);border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between}
+.ph h1{font-size:20px;font-weight:700;letter-spacing:-.3px}.ph p{font-size:13px;color:var(--t3);margin-top:2px}
+.ct{padding:24px 32px}
+.fbar{background:var(--sf);border-bottom:1px solid var(--bd);padding:12px 32px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.subpills{padding:8px 32px 12px;background:var(--sf);border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.spill{font-size:11px;padding:4px 12px;border-radius:14px;border:1px solid var(--bd);background:var(--bg);color:var(--t2);cursor:pointer;font-weight:500;transition:all .15s;white-space:nowrap}
+.spill:hover{border-color:var(--ac);color:var(--ac)}
+.spill.active{background:var(--ac);color:white;border-color:var(--ac)}
+.fl{font-size:11px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.5px}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;background:var(--bg);border:1px solid var(--bd);border-radius:20px;font-size:12.5px;font-weight:500;cursor:pointer;transition:all .15s;white-space:nowrap;font-family:var(--f)}
+.chip:hover{border-color:var(--ac);background:var(--al)}
+.cl{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;background:var(--bg);border:1px solid var(--bd);border-radius:20px;font-size:12.5px;font-weight:500;cursor:pointer;transition:all .15s}
+.cl:has(input:checked){background:var(--al);border-color:var(--ac);color:var(--ad)}
+.fi{padding:7px 12px;border:1px solid var(--bd);border-radius:var(--rs);font-size:12.5px;font-family:var(--f);background:var(--sf);color:var(--t1);outline:none;transition:border-color .15s}
+.fi:focus{border-color:var(--ac)}.fi.sm{width:100px}.fi.md{width:160px}.fi.lg{width:240px}
+select.fi{cursor:pointer}
+.rs2{font-size:12px;color:var(--t3)}
+.btn{padding:8px 16px;border-radius:var(--rs);font-size:12.5px;font-weight:600;font-family:var(--f);cursor:pointer;border:none;transition:all .15s;display:inline-flex;align-items:center;gap:6px}
+.btn-p{background:var(--ac);color:#fff}.btn-p:hover{background:var(--ad)}
+.btn-g{background:transparent;border:1px solid var(--bd);color:var(--t2)}.btn-g:hover{background:var(--bg)}
+.btn-b{background:var(--blue);color:#fff}.btn-b:hover{background:#2563eb}
+.btn-sm{padding:5px 10px;font-size:11.5px}
+.badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:600}
+.bg2{background:var(--al);color:var(--ad)}.bb2{background:var(--bluel);color:var(--blue)}.bo2{background:var(--orangel);color:#b45309}.br2{background:var(--redl);color:var(--red)}
+.vtabs{display:flex;gap:2px;background:var(--bg);border-radius:var(--rs);padding:2px}
+.vtab{padding:5px 14px;border-radius:4px;font-size:12px;font-weight:500;cursor:pointer;color:var(--t3);transition:all .15s;border:none;background:none;font-family:var(--f)}
+.vtab.active{background:var(--sf);color:var(--t1);box-shadow:0 1px 2px rgba(0,0,0,.04)}
+.kr{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:20px}
+.kp{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:18px 20px}
+.kl{font-size:12px;font-weight:500;color:var(--t3);margin-bottom:6px;text-transform:uppercase;letter-spacing:.3px}
+.kv{font-size:26px;font-weight:700;letter-spacing:-.5px;font-family:var(--m)}
+.kv small{font-size:14px;font-weight:500;color:var(--t2);font-family:var(--f);margin-left:2px}
+.card{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:20px;margin-bottom:14px}
+.card-t{font-size:14px;font-weight:600;margin-bottom:2px}.card-s{font-size:12px;color:var(--t3);margin-bottom:16px}
+.chb{position:relative;height:260px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px}
+.tc{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);overflow:hidden}
+.th2{display:flex;align-items:center;justify-content:space-between;padding:16px 20px 12px}
+.tht{font-size:14px;font-weight:600}.tha{font-size:12px;color:var(--ac);cursor:pointer;font-weight:500}.tha:hover{text-decoration:underline}
+table{width:100%;border-collapse:collapse}
+thead th{font-size:10.5px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.5px;padding:8px 16px;text-align:left;border-bottom:1px solid var(--bd);background:var(--bg);white-space:nowrap;cursor:pointer}
+thead th:not(:first-child){text-align:right}
+tbody tr{cursor:pointer;transition:background .1s}tbody tr:hover{background:var(--sh)}
+tbody td{padding:11px 16px;font-size:13px;border-bottom:1px solid var(--bl)}
+tbody td:not(:first-child){text-align:right;font-family:var(--m);font-size:12px}
+.bc2{display:flex;align-items:center;gap:10px}
+.bi{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0}
+.bn{font-weight:500}
+.sb{display:inline-flex;align-items:center;gap:6px}.sf2{height:6px;border-radius:3px;background:var(--ac);min-width:4px}.st2{font-size:11px;color:var(--t3)}
+.hint{position:absolute;bottom:8px;right:8px;font-size:10px;color:var(--t3);background:var(--bg);padding:2px 8px;border-radius:10px;pointer-events:none}
+.ds{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+.dst{background:var(--bg);border-radius:var(--rs);padding:14px}.dsl{font-size:11px;color:var(--t3);font-weight:500;text-transform:uppercase;letter-spacing:.3px;margin-bottom:4px}
+.dsv{font-size:20px;font-weight:700;font-family:var(--m)}
+.pc{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:16px;display:flex;gap:14px;cursor:pointer;transition:all .15s}
+.pc:hover{border-color:var(--ac);box-shadow:var(--shadow)}
+.pci{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.pcn{font-size:13px;font-weight:600}.pcd{font-size:11.5px;color:var(--t3);margin-top:2px;line-height:1.4}
+.pct{display:flex;gap:4px;margin-top:6px;flex-wrap:wrap}
+.ptag{padding:2px 8px;border-radius:10px;font-size:10px;font-weight:600;background:var(--bg);color:var(--t2)}
+.mo{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:300;display:none;align-items:center;justify-content:center}
+.mo.open{display:flex}
+.ml{background:var(--sf);border-radius:var(--rl);padding:24px;max-width:540px;width:90%;max-height:80vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.2)}
+.ml.wide{max-width:860px}
+.page{display:none}.page.active{display:block}
+.ef{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:16px 0}
+/* Phone preview */
+.phone{width:280px;min-width:280px;height:540px;background:#000;border-radius:36px;padding:12px;position:relative;box-shadow:0 8px 30px rgba(0,0,0,.3)}
+.phone-screen{width:100%;height:100%;background:#f8f9fa;border-radius:26px;overflow:hidden;display:flex;flex-direction:column;position:relative}
+.phone-status{height:44px;background:linear-gradient(135deg,#065f46,#10b981);display:flex;align-items:center;justify-content:space-between;padding:0 20px;color:#fff;font-size:10px;font-weight:600}
+.phone-notch{width:120px;height:28px;background:#000;border-radius:0 0 16px 16px;position:absolute;top:0;left:50%;transform:translateX(-50%);z-index:2}
+.phone-body{flex:1;padding:16px;overflow-y:auto;display:flex;flex-direction:column;gap:12px}
+.phone-card{background:#fff;border-radius:14px;padding:14px;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.phone-nudge{background:linear-gradient(135deg,#ecfdf5,#d1fae5);border:1px solid #a7f3d0;border-radius:14px;padding:14px;position:relative;animation:nudgeSlide .4s ease-out}
+@keyframes nudgeSlide{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
+.phone-btn{background:var(--ad);color:#fff;border:none;border-radius:10px;padding:10px 16px;font-size:11px;font-weight:700;width:100%;text-align:center;cursor:default}
+.phone-nav{height:52px;background:#fff;border-top:1px solid #e5e7eb;display:flex;align-items:center;justify-content:space-around;padding:0 8px}
+.phone-nav-item{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:8px;color:#9ca3af}
+.phone-nav-item.active{color:var(--ad)}
+.nudge-input{width:100%;border:1px solid var(--bd);border-radius:8px;padding:10px 12px;font-size:13px;font-family:var(--f);resize:vertical;outline:none;transition:border-color .2s}
+.nudge-input:focus{border-color:var(--ac)}
+@media(max-width:1200px){.kr{grid-template-columns:repeat(3,1fr)}.g2{grid-template-columns:1fr}}
+
+/* ════════════════════════════════════════════════════════════════
+   PULSE  —  Bank portal styles embedded in analytics v1.4
+════════════════════════════════════════════════════════════════ */
+.p-g4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+.p-sc{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:16px 18px}
+.p-scl{font-size:11px;color:var(--t3);margin-bottom:6px;font-weight:500;text-transform:uppercase;letter-spacing:.3px}
+.p-scv{font-size:22px;font-weight:700;letter-spacing:-.4px;font-family:var(--m)}
+.p-scs{font-size:11px;color:var(--t3);margin-top:4px}
+.p-sup{color:var(--ac);font-weight:600}
+.p-ch{padding:14px 18px;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between}
+.p-ch h3{font-size:13px;font-weight:600}
+.p-mb16{margin-bottom:16px}.p-mb20{margin-bottom:20px}
+/* Offer cards */
+.mkt-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.ocard{background:var(--sf);border:1.5px solid var(--bd);border-radius:var(--r);overflow:hidden;cursor:pointer;transition:all .18s;position:relative}
+.ocard:hover{border-color:var(--ac);box-shadow:0 4px 20px rgba(16,185,129,.12);transform:translateY(-1px)}
+.ocard.is-new{border-color:#93c5fd}
+.ocard-top{padding:16px 16px 14px}
+.ocard-brand{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.bic{width:40px;height:40px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
+.bname{font-size:13px;font-weight:600}.bcat{font-size:11px;color:var(--t3);margin-top:2px}
+.match-hero{background:var(--t1);border-radius:8px;padding:12px 14px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between}
+.match-hero-v{font-size:22px;font-weight:700;color:var(--ac);letter-spacing:-.03em}
+.match-hero-l{font-size:10px;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.5px;margin-top:2px}
+.match-conf{font-size:11px;font-weight:500;padding:3px 8px;border-radius:4px}
+.conf-hi{background:var(--al);color:var(--ad)}.conf-md{background:var(--orangel);color:#92400e}
+.ocard-financials{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.ocf{background:var(--bg);border-radius:6px;padding:9px 10px}
+.ocf-l{font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:.3px;margin-bottom:3px}
+.ocf-v{font-size:14px;font-weight:700;letter-spacing:-.02em}
+.ocard-bottom{padding:10px 16px;border-top:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between}
+.new-flag{position:absolute;top:10px;right:10px;background:var(--blue);color:#fff;font-size:9px;font-weight:700;padding:2px 7px;border-radius:4px;letter-spacing:.3px}
+/* Filter bar */
+.p-fbar{display:flex;align-items:center;gap:8px;margin-bottom:18px;flex-wrap:wrap}
+.fpill{padding:5px 13px;border-radius:20px;font-size:12px;font-weight:500;cursor:pointer;border:1.5px solid var(--bd);background:var(--sf);color:var(--t2);transition:all .15s;font-family:var(--f)}
+.fpill:hover{border-color:var(--ac);color:var(--ac)}.fpill.active{background:var(--t1);color:#fff;border-color:var(--t1)}
+/* Campaign rows */
+.camp-row{display:flex;align-items:center;gap:16px;padding:14px 18px;border-bottom:1px solid var(--bd);transition:background .1s;cursor:pointer}
+.camp-row:hover{background:var(--bg)}.camp-row:last-child{border-bottom:none}
+.camp-brand-ico{width:40px;height:40px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
+.camp-meta{flex:1;min-width:0}
+.camp-title{font-size:13px;font-weight:600}.camp-sub{font-size:11px;color:var(--t3);margin-top:2px}
+.p-prog{height:5px;background:var(--bl);border-radius:3px;overflow:hidden;margin-top:7px}
+.p-pf{height:100%;background:var(--ac);border-radius:3px}
+/* Campaign detail */
+.cd-grid{display:grid;grid-template-columns:1fr 300px;gap:20px;align-items:start}
+.cd-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
+.cd-kp{background:var(--bg);border-radius:var(--rs);padding:12px 14px}
+.cd-kl{font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:.3px;margin-bottom:4px}
+.cd-kv{font-size:18px;font-weight:700;letter-spacing:-.03em;font-family:var(--m)}
+.cd-ks{font-size:11px;color:var(--t3);margin-top:2px}
+.wk-row{display:grid;grid-template-columns:100px 1fr 80px;align-items:center;gap:10px;padding:5px 0}
+/* Pulse hero banner */
+.pulse-hero{background:linear-gradient(135deg,#0c1821 0%,#0a2218 100%);border-radius:var(--r);padding:28px 32px;margin-bottom:24px;display:flex;align-items:center;justify-content:space-between;gap:24px}
+.pulse-hero h2{font-size:22px;font-weight:700;color:#fff;letter-spacing:-.4px;margin-bottom:6px}
+.pulse-hero p{font-size:13px;color:rgba(255,255,255,.4);line-height:1.6;max-width:480px}
+.pulse-hero-tag{display:inline-flex;align-items:center;gap:6px;background:rgba(16,185,129,.15);color:var(--ac);font-size:11px;font-weight:600;padding:4px 12px;border-radius:20px;margin-top:10px}
+.pulse-hero-stats{display:flex;gap:32px;flex-shrink:0}
+.phs{text-align:center}.phsv{font-size:28px;font-weight:700;color:#fff;letter-spacing:-.5px;font-family:var(--m)}.phsl{font-size:11px;color:rgba(255,255,255,.35);margin-top:3px}
+/* Cat rows */
+.p-cat-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--bd)}
+.p-cat-row:last-child{border:none}
+.p-cat-name{font-size:12px;font-weight:500;flex:1}
+.p-cat-bar{flex:2;height:5px;background:var(--bg);border-radius:3px;overflow:hidden}
+.p-cat-bf{height:100%;background:var(--ac);border-radius:3px}
+.p-cat-val{font-size:11px;font-weight:600;color:var(--t2);width:60px;text-align:right}
+/* KV table */
+.p-kv-row{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--bd);font-size:12px}
+.p-kv-row:last-child{border-bottom:none}
+.p-kv-k{color:var(--t3)}.p-kv-v{font-weight:600}
+
+
+/* ── Pulse Activation Modal ── */
+.act-steps{display:flex;align-items:center;gap:0;margin-bottom:28px}
+.act-step{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:500;color:var(--t3)}
+.act-step.done .act-sn{background:var(--ac);border-color:var(--ac);color:#fff}
+.act-step.cur .act-sn{background:var(--t1);border-color:var(--t1);color:#fff}
+.act-step.cur{color:var(--t1)}
+.act-sn{width:24px;height:24px;border-radius:50%;border:1.5px solid var(--bd);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;transition:all .2s}
+.act-line{flex:1;height:1px;background:var(--bd);margin:0 8px;min-width:20px}
+.act-line.done{background:var(--ac)}
+.act-panel{display:none}.act-panel.active{display:block}
+.offer-summary-card{background:var(--t1);border-radius:var(--r);padding:20px 24px;margin-bottom:20px;display:flex;align-items:center;gap:16px}
+.osc-ico{width:48px;height:48px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-shrink:0}
+.osc-name{font-size:16px;font-weight:700;color:#fff;letter-spacing:-.2px}
+.osc-meta{font-size:12px;color:rgba(255,255,255,.4);margin-top:3px}
+.osc-stats{margin-left:auto;display:flex;gap:24px;flex-shrink:0}
+.osc-stat{text-align:center}
+.osc-stat-v{font-size:20px;font-weight:700;color:var(--ac);font-family:var(--m);letter-spacing:-.3px}
+.osc-stat-l{font-size:10px;color:rgba(255,255,255,.3);margin-top:2px}
+.cond-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px}
+.cond-card{background:var(--bg);border:1.5px solid var(--bd);border-radius:var(--rs);padding:14px 16px;cursor:pointer;transition:all .15s}
+.cond-card:hover{border-color:var(--ac)}
+.cond-card.selected{border-color:var(--ac);background:var(--al)}
+.cond-card-l{font-size:11px;color:var(--t3);margin-bottom:4px;font-weight:500}
+.cond-card-v{font-size:14px;font-weight:700}
+.cond-card.selected .cond-card-l{color:var(--ad)}
+.seg-pills{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
+.seg-pill{padding:5px 12px;border-radius:12px;font-size:11px;font-weight:500;border:1.5px solid var(--bd);background:var(--sf);color:var(--t2);cursor:pointer;transition:all .15s}
+.seg-pill:hover{border-color:var(--ac);color:var(--ac)}
+.seg-pill.on{background:var(--t1);color:#fff;border-color:var(--t1)}
+.confirm-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--bd);font-size:13px}
+.confirm-row:last-child{border:none}
+.confirm-k{color:var(--t3);font-size:12px}.confirm-v{font-weight:600}
+.confirm-banner{background:var(--al);border:1px solid var(--ac);border-radius:var(--rs);padding:14px 16px;display:flex;gap:10px;margin-bottom:20px}
+.confirm-banner svg{flex-shrink:0;color:var(--ad);margin-top:1px}
+.confirm-banner p{font-size:12px;color:var(--ad);line-height:1.6}
+.success-state{text-align:center;padding:16px 0 8px}
+.success-icon{width:64px;height:64px;border-radius:50%;background:var(--al);display:flex;align-items:center;justify-content:center;margin:0 auto 16px}
+
+</style>
+</head>
+<body>
+<div class="app">
+<nav class="sidebar">
+  <div class="sidebar-logo"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="#10b981"/><path d="M8 12l3 3 5-6" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Pulse <span>Portals</span>
+  <select id="vswitch" style="margin-left:auto;background:#1a2332;border:1px solid #2d3b4d;color:#64748b;font-size:9px;font-weight:600;padding:2px 16px 2px 5px;border-radius:5px;cursor:pointer;appearance:none;-webkit-appearance:none;outline:none;background-image:url('data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%278%27 height=%278%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27%2364748b%27 stroke-width=%272%27%3E%3Cpath d=%27M6 9l6 6 6-6%27/%3E%3C/svg%3E');background-repeat:no-repeat;background-position:right 4px center" onchange="if(this.value)window.top.location.href=this.value"></select>
+  </div>
+  <div class="ssec" id="snav-merchant-label">Pulse <span style="font-size:9px;font-weight:500;color:#4b5563;text-transform:none;letter-spacing:0;opacity:.8">(Merchant Portal)</span></div>
+  <div class="snav" id="snav">
+    <a onclick="go('pulse-merchant')" data-p="pulse-merchant"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Dashboard</a>
+    <a onclick="go('pulse-merchant-offers')" data-p="pulse-merchant-offers"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 12V22H4V12"/><path d="M22 7H2v5h20V7z"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 010-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 000-5C13 2 12 7 12 7z"/></svg>My Offers</a>
+    <a onclick="go('pulse-merchant-create')" data-p="pulse-merchant-create"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14" stroke-linecap="round"/></svg>New Offer</a>
+  </div>
+  <div class="ssec" style="padding-top:16px">Pulse <span style="font-size:9px;font-weight:500;color:#4b5563;text-transform:none;letter-spacing:0;opacity:.8">(Bank Portal)</span></div>
+  <div class="snav">
+    <a onclick="go('pulse')" data-p="pulse"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>Overview</a>
+    <a onclick="go('pulse-offers')" data-p="pulse-offers"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>New Offers <span class="badge bo2" style="margin-left:auto;font-size:9px">3</span></a>
+    <a onclick="go('pulse-campaigns')" data-p="pulse-campaigns"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>Active Campaigns</a>
+  </div>
+</nav>
+<div class="main" id="main-area"></div>
+</div>
+<script>
+let charts={};
+function go(pg,d){
+  document.querySelectorAll('#snav a[data-p]').forEach(a=>a.classList.toggle('active',a.dataset.p===pg));
+  window.scrollTo(0,0);
+  Object.values(charts).forEach(c=>{if(c&&c.destroy)c.destroy()});
+  charts={};
+}
+function closeModal(){}
+function initPage(){}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// PULSE  ——  Bank-side cashback portal integrated into LuneHub Analytics v1.4
+// ═══════════════════════════════════════════════════════════════════════════════
+
+const CAMPAIGNS = {
+  carrefour: {
+    title: 'Summer Grocery Cashback',
+    meta: 'Carrefour UAE · 8% cashback · Grocery & Supermarket',
+    budget: 'AED 160,000', paid: 'AED 108,800', utilPct: 68, txns: '740',
+    remaining: 'AED 51,200', remainingSub: '32% of budget still available',
+    redeemers: '3,840', burnLabel: 'AED 108,800 of AED 160,000',
+    ico: 'CR', icoBg: '#e8f5ee', icoC: '#003D1F',
+    weekly: [
+      {label:'Jul 1–7',      paid: 22400},
+      {label:'Jul 8–14',     paid: 28100},
+      {label:'Jul 15–21',    paid: 31600},
+      {label:'Jul 22–28',    paid: 26700},
+      {label:'Jul 29–Aug 4', paid: 0},
+    ],
+    funnel: [
+      {label:'Eligible customers', val:60000, pct:100},
+      {label:'Offer activated',    val:38400, pct:64},
+      {label:'Transacted',         val:8400,  pct:14},
+      {label:'Cashback redeemed',  val:3840,  pct:6.4},
+    ],
+    metrics: [
+      ['Avg cashback per redeemer',     'AED 28.33'],
+      ['Avg transaction value',         'AED 354'],
+      ['Avg transactions / redeemer',   '2.8'],
+      ['Redemption rate',               '6.4%'],
+      ['Budget runway at current pace', '~47 days'],
+    ],
+    txnList:[
+      {date:'Aug 14',ref:'TXN-4821',spend:'AED 480',  cashback:'AED 38.40',status:'Paid'},
+      {date:'Aug 14',ref:'TXN-4820',spend:'AED 322',  cashback:'AED 25.76',status:'Paid'},
+      {date:'Aug 13',ref:'TXN-4819',spend:'AED 815',  cashback:'AED 65.20',status:'Paid'},
+      {date:'Aug 13',ref:'TXN-4818',spend:'AED 214',  cashback:'AED 17.12',status:'Paid'},
+      {date:'Aug 12',ref:'TXN-4817',spend:'AED 1,240',cashback:'AED 99.20',status:'Paid'},
+      {date:'Aug 12',ref:'TXN-4816',spend:'AED 378',  cashback:'AED 30.24',status:'Paid'},
+      {date:'Aug 11',ref:'TXN-4815',spend:'AED 592',  cashback:'AED 47.36',status:'Paid'},
+      {date:'Aug 11',ref:'TXN-4814',spend:'AED 267',  cashback:'AED 21.36',status:'Pending'},
+    ],
+    txnCount: 740, txnFooter: 'Showing 8 of 740 qualifying transactions · Refs anonymised',
+    details:[['Merchant','Carrefour UAE'],['Category','Grocery & Supermarket'],['Cashback Rate','8%'],['Campaign Period','Jul 1 – Aug 31, 2025'],['Min Transaction','AED 200'],['Cashback Cap','AED 500 / customer / mo'],['Budget Remaining','AED 51,200']]
+  },
+  noon: {
+    title: 'noon Summer Shopping Festival',
+    meta: 'noon · 6% cashback · Online Shopping',
+    budget: 'AED 200,000', paid: 'AED 82,000', utilPct: 41, txns: '1,240',
+    remaining: 'AED 118,000', remainingSub: '59% of budget still available',
+    redeemers: '5,120', burnLabel: 'AED 82,000 of AED 200,000',
+    ico: 'NO', icoBg: '#fff8e6', icoC: '#b45309',
+    weekly: [
+      {label:'Jul 1–7',      paid: 12400},
+      {label:'Jul 8–14',     paid: 18200},
+      {label:'Jul 15–21',    paid: 22600},
+      {label:'Jul 22–28',    paid: 19800},
+      {label:'Jul 29–Aug 4', paid: 9000},
+    ],
+    funnel: [
+      {label:'Eligible customers', val:85000, pct:100},
+      {label:'Offer activated',    val:52700, pct:62},
+      {label:'Transacted',         val:11900, pct:14},
+      {label:'Cashback redeemed',  val:5120,  pct:6.0},
+    ],
+    metrics: [
+      ['Avg cashback per redeemer',     'AED 16.02'],
+      ['Avg transaction value',         'AED 267'],
+      ['Avg transactions / redeemer',   '3.1'],
+      ['Redemption rate',               '6.0%'],
+      ['Budget runway at current pace', '~62 days'],
+    ],
+    txnList:[
+      {date:'Aug 3',  ref:'TXN-8821001',spend:'AED 640',cashback:'AED 38.40',status:'Paid'},
+      {date:'Aug 2',  ref:'TXN-8820544',spend:'AED 420',cashback:'AED 25.20',status:'Paid'},
+      {date:'Aug 2',  ref:'TXN-8819988',spend:'AED 880',cashback:'AED 52.80',status:'Paid'},
+      {date:'Aug 1',  ref:'TXN-8819201',spend:'AED 310',cashback:'AED 18.60',status:'Paid'},
+      {date:'Jul 31', ref:'TXN-8817433',spend:'AED 560',cashback:'AED 33.60',status:'Pending'},
+      {date:'Jul 30', ref:'TXN-8816788',spend:'AED 720',cashback:'AED 43.20',status:'Paid'},
+    ],
+    txnCount: 1240, txnFooter: 'Showing 6 of 1,240 qualifying transactions · Refs anonymised',
+    details:[['Merchant','noon'],['Category','Online Shopping'],['Cashback Rate','6%'],['Campaign Period','Jul 1 – Aug 31, 2025'],['Min Transaction','AED 150'],['Cashback Cap','AED 400 / customer / mo'],['Budget Remaining','AED 118,000']]
+  }
+};
+
+// ── Pulse: Overview ──────────────────────────────────────────────────────────
+function pgPulse() {
+  return `
+<div class="bc"><a onclick="go('overview')">LuneHub</a><span class="sep">›</span> <span>Pulse</span></div>
+<div class="ph"><div><h1>Good morning, ADIB</h1><p>3 new offers are available for your review.</p></div>
+  <button class="btn btn-g btn-sm" onclick="go('pulse-offers')">Browse new offers →</button>
+</div>
+<div class="ct">
+  <div class="p-g4">
+    <div class="p-sc"><div class="p-scl">Active Campaigns</div><div class="p-scv">2</div><div class="p-scs">Live on customer base</div></div>
+    <div class="p-sc"><div class="p-scl">Customers Reached</div><div class="p-scv">307,200</div><div class="p-scs">Across all live offers</div></div>
+    <div class="p-sc"><div class="p-scl">Cashback Distributed</div><div class="p-scv">AED 87,400</div><div class="p-scs"><span class="p-sup">↑ 18%</span> vs last month</div></div>
+    <div class="p-sc"><div class="p-scl">New Offers</div><div class="p-scv">3</div><div class="p-scs" style="color:var(--orange)">Awaiting review</div></div>
+  </div>
+
+  <div class="card p-mb20">
+    <div class="p-ch"><h3>New Offers</h3><a class="tha" onclick="go('pulse-offers')">View all →</a></div>
+    <div style="padding:18px;display:grid;grid-template-columns:repeat(3,1fr);gap:12px;">
+      ${[
+        {ico:'CR',bg:'#e8f5ee',c:'#003D1F',name:'Carrefour UAE',cat:'Grocery & Supermarket',match:'~114K',conf:'High match',budget:'AED 100K',rate:'8%',expires:'Aug 31',idx:0},
+        {ico:'NA',bg:'#fff0f5',c:'#9b1c50',name:'Namshi',cat:'Fashion & Apparel',match:'~62K',conf:'Medium match',budget:'AED 75K',rate:'10%',expires:'Sep 15',idx:2},
+        {ico:'SB',bg:'#e8f5ee',c:'#003D1F',name:'Starbucks UAE',cat:'Cafes & Coffee',match:'~88K',conf:'High match',budget:'AED 50K',rate:'12%',expires:'Aug 20',idx:3},
+      ].map(o=>`
+        <div class="ocard is-new" onclick="go('pulse-offer-detail',${o.idx})">
+          <div class="new-flag">NEW</div>
+          <div class="ocard-top">
+            <div class="ocard-brand">
+              <div class="bic" style="background:${o.bg};color:${o.c}">${o.ico}</div>
+              <div><div class="bname">${o.name}</div><div class="bcat">${o.cat}</div></div>
+            </div>
+            <div class="match-hero">
+              <div><div class="match-hero-v">${o.match}</div><div class="match-hero-l">matched customers</div></div>
+              <span class="match-conf ${o.conf.startsWith('High')?'conf-hi':'conf-md'}">${o.conf}</span>
+            </div>
+            <div class="ocard-financials">
+              <div class="ocf"><div class="ocf-l">Budget</div><div class="ocf-v">${o.budget}</div></div>
+              <div class="ocf"><div class="ocf-l">Cashback</div><div class="ocf-v">${o.rate}</div></div>
+            </div>
+          </div>
+          <div class="ocard-bottom">
+            <span style="font-size:11px;color:var(--t3)">Expires ${o.expires}</span>
+            <button class="btn btn-p btn-sm" onclick="event.stopPropagation();go('pulse-offer-detail',${o.idx})">Review →</button>
+          </div>
+        </div>`).join('')}
+    </div>
+  </div>
+
+  <div class="card p-mb20">
+    <div class="p-ch"><h3>Active Campaigns</h3><a class="tha" onclick="go('pulse-campaigns')">View all →</a></div>
+    <table>
+      <thead>
+        <tr><th>Merchant</th><th>Category</th><th>Cashback</th><th>Budget</th><th>Utilisation</th><th>Expires</th><th></th></tr>
+      </thead>
+      <tbody>
+        ${[
+          {ico:'CR',bg:'#e8f5ee',c:'#003D1F',key:'carrefour',title:'Summer Grocery Cashback',name:'Carrefour UAE',cat:'Grocery & Supermarket',rate:'8%',budget:'AED 160K',pct:68,expires:'Aug 31, 2025'},
+          {ico:'NO',bg:'#fff8e6',c:'#b45309',key:'noon',title:'noon Summer Shopping Festival',name:'noon',cat:'Online Shopping',rate:'6%',budget:'AED 200K',pct:41,expires:'Aug 31, 2025'},
+        ].map(camp=>`
+          <tr onclick="go('pulse-campaign-detail','${camp.key}')" style="cursor:pointer">
+            <td>
+              <div class="bc2">
+                <div class="bi" style="background:${camp.bg};color:${camp.c}">${camp.ico}</div>
+                <div>
+                  <div class="bn">${camp.name}</div>
+                  <div style="font-size:11px;color:var(--t3)">${camp.title}</div>
+                </div>
+              </div>
+            </td>
+            <td style="font-size:12px;color:var(--t2);text-align:left;font-family:var(--f)">${camp.cat}</td>
+            <td style="font-size:13px;font-weight:700;color:var(--ac);text-align:left;font-family:var(--f)">${camp.rate}</td>
+            <td style="text-align:left;font-family:var(--f)">${camp.budget}</td>
+            <td style="text-align:left;font-family:var(--f)">
+              <div style="display:flex;align-items:center;gap:8px">
+                <div style="width:80px;height:5px;background:var(--bl);border-radius:3px;overflow:hidden"><div style="width:${camp.pct}%;height:100%;background:var(--ac);border-radius:3px"></div></div>
+                <span style="font-size:11.5px;font-weight:600">${camp.pct}%</span>
+              </div>
+            </td>
+            <td style="font-size:12px;color:var(--t3);text-align:left;font-family:var(--f)">${camp.expires}</td>
+            <td style="text-align:right"><button class="btn btn-g btn-sm" onclick="event.stopPropagation();go('pulse-campaign-detail','${camp.key}')">Analytics →</button></td>
+          </tr>`).join('')}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="p-ch"><h3>Budget Burn</h3></div>
+      <div style="padding:18px;display:flex;flex-direction:column;gap:16px">
+        ${[
+          {ico:'CR',bg:'#e8f5ee',c:'#003D1F',name:'Carrefour UAE',pct:68,pctLabel:'37%',total:'AED 160K'},
+          {ico:'NO',bg:'#fff8e6',c:'#b45309',name:'noon',pct:41,pctLabel:'41%',total:'AED 200K'},
+        ].map(camp=>`
+          <div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px">
+              <div style="display:flex;align-items:center;gap:8px">
+                <div style="width:22px;height:22px;border-radius:4px;background:${camp.bg};color:${camp.c};display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700">${camp.ico}</div>
+                <span style="font-size:12px;font-weight:500">${camp.name}</span>
+              </div>
+              <span style="font-size:12px;font-weight:600">${camp.pct}% <span style="font-weight:400;color:var(--t3);font-size:11px">of ${camp.total}</span></span>
+            </div>
+            <div style="height:5px;background:var(--bl);border-radius:3px;overflow:hidden"><div style="width:${camp.pct}%;height:100%;background:var(--ac);border-radius:3px"></div></div>
+          </div>`).join('')}
+      </div>
+    </div>
+    <div class="card">
+      <div class="p-ch"><h3>Top Spend Categories</h3><span style="font-size:11px;color:var(--t3)">Across active campaigns</span></div>
+      <div style="padding:18px">
+        ${[
+          {rank:1,name:'Grocery & Supermarket',w:100,val:'AED 2.1M'},
+          {rank:2,name:'Food & Beverage',w:71,val:'AED 1.5M'},
+          {rank:3,name:'Fashion & Apparel',w:52,val:'AED 1.1M'},
+          {rank:4,name:'Fuel & Automotive',w:42,val:'AED 890K'},
+          {rank:5,name:'Health & Pharmacy',w:31,val:'AED 640K'},
+        ].map(r=>`
+          <div class="p-cat-row">
+            <div style="font-size:11px;font-weight:600;color:var(--t3);width:16px;flex-shrink:0">${r.rank}</div>
+            <div class="p-cat-name">${r.name}</div>
+            <div class="p-cat-bar"><div class="p-cat-bf" style="width:${r.w}%"></div></div>
+            <div class="p-cat-val">${r.val}</div>
+          </div>`).join('')}
+      </div>
+    </div>
+  </div>
+</div>`;
+}
+
+// ── Pulse: New Offers ────────────────────────────────────────────────────────
+const PULSE_OFFERS = [
+  {ico:'CR',bg:'#e8f5ee',c:'#003D1F',name:'Carrefour UAE',cat:'Grocery & Supermarket',match:'~114K',conf:'High match',budget:'AED 100K',rate:'8%',expires:'Aug 31',isNew:true},
+  {ico:'LU',bg:'#f0fdf4',c:'#166534',name:'Lulu Hypermarket',cat:'Grocery & Supermarket',match:'~88K',conf:'High match',budget:'AED 75K',rate:'6%',expires:'Sep 15',isNew:true},
+  {ico:'NA',bg:'#f5f3ff',c:'#4c1d95',name:'Namshi',cat:'Fashion & Apparel',match:'~42K',conf:'Med match',budget:'AED 50K',rate:'10%',expires:'Sep 30',isNew:true},
+  {ico:'SB',bg:'#fef9ee',c:'#78350f',name:'Starbucks UAE',cat:'Food & Beverage',match:'~67K',conf:'High match',budget:'AED 40K',rate:'15%',expires:'Aug 31',isNew:false},
+  {ico:'AP',bg:'#f5f5f4',c:'#292524',name:'Apple Store',cat:'Electronics & Tech',match:'~29K',conf:'Med match',budget:'AED 120K',rate:'3%',expires:'Oct 1',isNew:false},
+  {ico:'AD',bg:'#fff8e6',c:'#b45309',name:'Adidas UAE',cat:'Sports & Outdoor',match:'~38K',conf:'Med match',budget:'AED 60K',rate:'8%',expires:'Sep 15',isNew:false},
+];
+
+function pgPulseOffers() {
+  const offers = PULSE_OFFERS;
+  return `
+<div class="bc"><a onclick="go('pulse')">Pulse</a><span class="sep">›</span> <span>New Offers</span></div>
+<div class="ph"><div><h1>New Offers</h1><p>All offers reviewed and approved by Lune before listing. Activate independently.</p></div></div>
+<div class="ct">
+  <div class="p-fbar">
+    <button class="fpill active">All offers</button>
+    <button class="fpill">New · 3</button>
+    <button class="fpill">Grocery</button>
+    <button class="fpill">Fashion</button>
+    <button class="fpill">F&B</button>
+    <button class="fpill">Electronics</button>
+    <button class="fpill">Sports</button>
+  </div>
+  <div class="mkt-grid">
+    ${offers.map((o,i)=>`
+      <div class="ocard${o.isNew?' is-new':''}" onclick="go('pulse-offer-detail',${i})" style="cursor:pointer">
+        ${o.isNew?'<div class="new-flag">NEW</div>':''}
+        <div class="ocard-top">
+          <div class="ocard-brand">
+            <div class="bic" style="background:${o.bg};color:${o.c}">${o.ico}</div>
+            <div><div class="bname">${o.name}</div><div class="bcat">${o.cat}</div></div>
+          </div>
+          <div class="match-hero">
+            <div><div class="match-hero-v">${o.match}</div><div class="match-hero-l">matched customers</div></div>
+            <span class="match-conf ${o.conf.startsWith('High')?'conf-hi':'conf-md'}">${o.conf}</span>
+          </div>
+          <div class="ocard-financials">
+            <div class="ocf"><div class="ocf-l">Budget</div><div class="ocf-v">${o.budget}</div></div>
+            <div class="ocf"><div class="ocf-l">Cashback</div><div class="ocf-v">${o.rate}</div></div>
+          </div>
+        </div>
+        <div class="ocard-bottom">
+          <span style="font-size:11px;color:var(--t3)">Expires ${o.expires}</span>
+          <button class="btn btn-p btn-sm" onclick="event.stopPropagation();go('pulse-offer-detail',${i})">Review →</button>
+        </div>
+      </div>`).join('')}
+  </div>
+</div>`;
+}
+
+// ── Pulse: Offer Detail (bank portal review page) ────────────────────────────
+function pgPulseOfferDetail(idx) {
+  const o = PULSE_OFFERS[idx];
+  if (!o) return document.getElementById('main-area').innerHTML = pgPulseOffers();
+
+  const brandTagsHTML = _actPageBrands.map(name => {
+    const b = M_BRANDS.find(x => x.name === name);
+    const ico = b ? `<span style="width:16px;height:16px;border-radius:3px;background:${b.bg};color:${b.tc};font-size:8px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;margin-right:3px">${b.ic}</span>` : '';
+    return `<span style="display:inline-flex;align-items:center;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:500;background:#1e3a5f;color:#93c5fd">${ico}${name}<button onclick="offerDetailRemoveBrand(${idx},'${name.replace(/'/g,"\\'")}') " style="cursor:pointer;opacity:.5;font-size:12px;line-height:1;background:none;border:none;color:inherit;padding:0;margin-left:4px">×</button></span>`;
+  }).join('');
+
+  return `
+<div class="bc"><a onclick="go('pulse')">Pulse</a><span class="sep">›</span><a onclick="go('pulse-offers')"> New Offers</a><span class="sep">›</span> <span>${o.name}</span></div>
+<div class="ph">
+  <div style="display:flex;align-items:center;gap:12px">
+    <div class="bi" style="background:${o.bg};color:${o.c};width:40px;height:40px;border-radius:10px;font-size:12px;flex-shrink:0">${o.ico}</div>
+    <div>
+      <h1>${o.name}</h1>
+      <p>${o.cat} · ${o.rate} cashback · Expires ${o.expires}</p>
+    </div>
+  </div>
+  <button class="btn btn-g btn-sm" onclick="go('pulse-offers')">← Back</button>
+</div>
+<div class="ct">
+
+  <div style="background:var(--al);border:1px solid #a7f3d0;border-radius:var(--r);padding:12px 16px;display:flex;gap:10px;font-size:12px;color:var(--ad);margin-bottom:20px">
+    <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="flex-shrink:0;margin-top:1px"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke-width="2"/></svg>
+    This offer has been reviewed and approved by Lune. You can activate independently — no fee, no commitment.
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 300px;gap:20px;align-items:start">
+
+    <div>
+      <div class="card p-mb16">
+        <div class="p-ch"><h3>Offer details</h3></div>
+        <div style="padding:0 16px">
+          ${[
+            ['Merchant',        o.name],
+            ['Category',        o.cat],
+            ['Cashback rate',   o.rate],
+            ['Merchant budget', o.budget],
+            ['Min spend',       o.minSpend || 'AED 150'],
+            ['Match confidence',o.conf],
+            ['Expires',         o.expires],
+          ].map(([k,v]) => `
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--bl)">
+              <span style="font-size:12px;color:var(--t3)">${k}</span>
+              <span style="font-size:12.5px;font-weight:500">${v}</span>
+            </div>`).join('')}
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="p-ch"><h3>Targeting conditions</h3></div>
+        <div style="padding:18px">
+
+          <div style="margin-bottom:14px">
+            <label style="display:block;font-size:12px;font-weight:600;color:var(--t2);margin-bottom:5px">Category</label>
+            <select class="fi" style="width:100%">
+              <option selected>${o.cat}</option>
+              <option>Grocery &amp; Supermarket</option>
+              <option>Food &amp; Beverage</option>
+              <option>Fashion &amp; Apparel</option>
+              <option>Health &amp; Beauty</option>
+              <option>Electronics &amp; Tech</option>
+              <option>Fuel &amp; Automotive</option>
+            </select>
+          </div>
+
+          <div style="margin-bottom:14px">
+            <label style="display:block;font-size:12px;font-weight:600;color:var(--t2);margin-bottom:8px">Subcategories</label>
+            <div style="display:flex;flex-wrap:wrap;gap:6px">
+              ${(()=>{
+                const subs = {
+                  'Grocery & Supermarket': ['Supermarket','Hypermarket','Convenience Store','Grocery Delivery'],
+                  'Food & Beverage':       ['Restaurants','Food Delivery','Coffeeshop','Nightlife'],
+                  'Fashion & Apparel':     ['Clothing','Department Stores','Online Shopping','Footwear'],
+                  'Health & Beauty':       ['Pharmacy','Medical','Hair & Beauty','Gym'],
+                  'Electronics & Tech':    ['Mobile & Tablets','Computers','Accessories','Gaming'],
+                  'Fuel & Automotive':     ['Fuel & E-charging','Car Maintenance','Car Rental','Parking'],
+                };
+                const list = subs[o.cat] || ['All subcategories'];
+                return list.map(s => `<label style="display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border:1px solid var(--bd);border-radius:20px;font-size:12px;cursor:pointer;transition:all .12s" onmouseenter="this.style.borderColor='var(--ac)'" onmouseleave="if(!this.querySelector('input').checked)this.style.borderColor='var(--bd)'">
+                  <input type="checkbox" style="accent-color:var(--ac);width:12px;height:12px"> ${s}
+                </label>`).join('');
+              })()}
+            </div>
+          </div>
+
+          <div style="margin-bottom:14px">
+            <label style="display:block;font-size:12px;font-weight:600;color:var(--t2);margin-bottom:5px">Brand targeting <span style="font-weight:400;color:var(--t3)">— optional</span></label>
+            <div style="position:relative" id="offer-brand-wrap">
+              <div style="display:flex;align-items:center;gap:8px;border:1px solid var(--bd);border-radius:var(--rs);padding:7px 10px;background:var(--sf)">
+                <svg width="12" height="12" fill="none" stroke="var(--t3)" viewBox="0 0 24 24" style="flex-shrink:0"><circle cx="11" cy="11" r="8" stroke-width="2.2"/><path d="M21 21l-4.35-4.35" stroke-width="2.2" stroke-linecap="round"/></svg>
+                <input id="offer-brand-input" placeholder="Search brands…" autocomplete="off"
+                  style="flex:1;border:none;background:none;font-size:12px;font-family:var(--f);color:var(--t1);outline:none"
+                  oninput="offerDetailBrandInput(this.value,${idx})" onfocus="offerDetailBrandInput(this.value,${idx})" onblur="setTimeout(offerDetailCloseBrand,180)">
+              </div>
+              <div id="offer-brand-drop" style="display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;background:var(--sf);border:1px solid var(--bd);border-radius:var(--rs);box-shadow:0 8px 24px rgba(0,0,0,.1);z-index:100;max-height:220px;overflow-y:auto"></div>
+            </div>
+            ${_actPageBrands.length ? `<div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:8px">${brandTagsHTML}</div>` : ''}
+          </div>
+
+          <div style="margin-bottom:14px">
+            <label style="display:block;font-size:12px;font-weight:600;color:var(--t2);margin-bottom:5px">Monthly spend (AED)</label>
+            <div class="g2" style="gap:8px">
+              <div>
+                <div style="font-size:10px;color:var(--t3);margin-bottom:3px">Min</div>
+                <select class="fi" style="width:100%"><option>AED 50</option><option selected>AED 100</option><option>AED 200</option><option>AED 500</option></select>
+              </div>
+              <div>
+                <div style="font-size:10px;color:var(--t3);margin-bottom:3px">Max</div>
+                <select class="fi" style="width:100%"><option>AED 2,000</option><option>AED 5,000</option><option selected>AED 10,000</option><option>No limit</option></select>
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-bottom:14px">
+            <label style="display:block;font-size:12px;font-weight:600;color:var(--t2);margin-bottom:5px">Min transactions / month</label>
+            <select class="fi" style="width:100%"><option selected>1 txn/mo</option><option>2 txn/mo</option><option>3 txn/mo</option><option>4+ txn/mo</option></select>
+          </div>
+
+          <div>
+            <label style="display:block;font-size:12px;font-weight:600;color:var(--t2);margin-bottom:5px">Look-back window</label>
+            <select class="fi" style="width:100%"><option>1 month</option><option>2 months</option><option selected>3 months</option><option>6 months</option></select>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div style="background:var(--t1);border-radius:var(--r);padding:24px;margin-bottom:14px;text-align:center">
+        <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;color:rgba(255,255,255,.35);margin-bottom:8px">Matched customers</div>
+        <div style="font-size:44px;font-weight:700;color:#fff;letter-spacing:-.04em;line-height:1;margin-bottom:6px">${o.match}</div>
+        <div style="font-size:12px;color:rgba(255,255,255,.4)">on your card base</div>
+      </div>
+
+      <button class="btn btn-p" style="width:100%;justify-content:center;padding:12px;font-size:13px;margin-bottom:8px" onclick="offerDetailActivate(${idx})">
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        Activate offer
+      </button>
+
+      <button class="btn btn-g" style="width:100%;justify-content:center" onclick="offerDetailShowReject(${idx})">
+        Reject offer
+      </button>
+
+      <div id="offer-reject-panel" style="display:none;margin-top:12px;background:#fee2e2;border:1px solid #fca5a5;border-radius:var(--rs);padding:14px 16px">
+        <div style="font-size:12px;font-weight:600;color:#ef4444;margin-bottom:8px">Leave a comment for the merchant</div>
+        <textarea id="offer-reject-comment" class="fi" rows="3" style="width:100%;resize:none;margin-bottom:10px" placeholder="e.g. Budget too low for current network reach. Please resubmit with a minimum AED 50,000 budget."></textarea>
+        <div style="display:flex;gap:8px;justify-content:flex-end">
+          <button class="btn btn-g btn-sm" onclick="document.getElementById('offer-reject-panel').style.display='none'">Cancel</button>
+          <button class="btn btn-sm" style="background:#ef4444;color:#fff;border:none" onclick="offerDetailConfirmReject(${idx})">Send &amp; reject</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>`;
+}
+function offerDetailBrandInput(q, idx) {
+  const drop = document.getElementById('offer-brand-drop');
+  if (!drop) return;
+  const val = q.trim().toLowerCase();
+  const filtered = val ? M_BRANDS.filter(b => b.name.toLowerCase().includes(val) || b.cat.toLowerCase().includes(val)) : M_BRANDS;
+  if (!filtered.length) { drop.innerHTML = '<div style="padding:12px;text-align:center;font-size:12px;color:var(--t3)">No brands found</div>'; drop.style.display = 'block'; return; }
+  const byCat = {};
+  filtered.forEach(b => { if (!byCat[b.cat]) byCat[b.cat] = []; byCat[b.cat].push(b); });
+  let html = '';
+  Object.entries(byCat).forEach(([cat, brands]) => {
+    html += `<div style="font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--t3);padding:7px 12px 4px;background:var(--bg);position:sticky;top:0">${cat}</div>`;
+    brands.forEach(b => {
+      const sel = _actPageBrands.includes(b.name);
+      html += `<div onclick="offerDetailAddBrand(${idx},'${b.name.replace(/'/g,"\\'")}') " style="display:flex;align-items:center;gap:9px;padding:7px 12px;cursor:pointer;border-top:1px solid var(--bd);${sel?'opacity:.4;pointer-events:none':''}" onmouseenter="this.style.background='var(--bg)'" onmouseleave="this.style.background=''">
+        <div style="width:26px;height:26px;border-radius:5px;background:${b.bg};color:${b.tc};display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0">${b.ic}</div>
+        <div style="flex:1;font-size:12px;font-weight:500">${b.name}</div>
+        <span style="font-size:10px;font-weight:600;color:${sel?'var(--ac)':'var(--blue)'};background:${sel?'var(--al)':'var(--bluel)'};padding:2px 7px;border-radius:3px">${sel?'✓ Added':'+ Add'}</span>
+      </div>`;
+    });
+  });
+  drop.innerHTML = html;
+  drop.style.display = 'block';
+}
+
+function offerDetailAddBrand(idx, name) {
+  if (!_actPageBrands.includes(name)) _actPageBrands.push(name);
+  offerDetailCloseBrand();
+  const inp = document.getElementById('offer-brand-input');
+  if (inp) inp.value = '';
+  document.getElementById('main-area').innerHTML = pgPulseOfferDetail(idx);
+}
+
+function offerDetailRemoveBrand(idx, name) {
+  _actPageBrands = _actPageBrands.filter(n => n !== name);
+  document.getElementById('main-area').innerHTML = pgPulseOfferDetail(idx);
+}
+
+function offerDetailCloseBrand() {
+  const d = document.getElementById('offer-brand-drop');
+  if (d) d.style.display = 'none';
+}
+
+document.addEventListener('click', e => {
+  const wrap = document.getElementById('offer-brand-wrap');
+  if (wrap && !wrap.contains(e.target)) offerDetailCloseBrand();
+});
+
+function offerDetailActivate(idx) {
+  actPageConfirmActivate(idx);
+}
+
+function offerDetailShowReject(idx) {
+  const panel = document.getElementById('offer-reject-panel');
+  if (panel) { panel.style.display = 'block'; panel.scrollIntoView({behavior:'smooth',block:'nearest'}); }
+}
+
+function offerDetailConfirmReject(idx) {
+  const o = PULSE_OFFERS[idx];
+  const comment = document.getElementById('offer-reject-comment')?.value?.trim() || '';
+  document.getElementById('main-area').innerHTML = `
+    <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 32px;text-align:center">
+      <div style="width:56px;height:56px;border-radius:50%;background:#fee2e2;display:flex;align-items:center;justify-content:center;margin-bottom:16px">
+        <svg width="24" height="24" fill="none" stroke="#ef4444" stroke-width="2.5" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12" stroke-linecap="round"/></svg>
+      </div>
+      <div style="font-size:20px;font-weight:700;margin-bottom:8px">Offer Rejected</div>
+      <p style="font-size:13px;color:var(--t3);max-width:380px;line-height:1.7;margin-bottom:${comment?'16px':'24px'}">
+        <strong style="color:var(--t1)">${o.name}</strong> has been rejected.${comment?' Your comment has been sent to the merchant.':''}
+      </p>
+      ${comment?`<div style="background:var(--bg);border-radius:var(--rs);padding:12px 16px;font-size:12px;color:var(--t2);max-width:400px;line-height:1.6;margin-bottom:24px;text-align:left;border-left:3px solid #ef4444">"${comment}"</div>`:''}
+      <button class="btn btn-g" onclick="go('pulse-offers')">Back to offers</button>
+    </div>`;
+  window.scrollTo(0,0);
+}
+
+// ── Pulse: Activate Offer — Step 1 (conditions) ──────────────────────────────
+let _actPageBrands = [];
+let _actPageStep   = 1;
+
+function pgPulseActivate(idx) {
+  const o = PULSE_OFFERS[idx];
+  if (!o) { go('pulse-offers'); return ''; }
+  return _actPageStep === 2 ? _pgActivateConfirm(o, idx) : _pgActivateConditions(o, idx);
+}
+
+function _pgActivateConditions(o, idx) {
+  const brandTagsHTML = _actPageBrands.map(name => {
+    const b = M_BRANDS.find(x => x.name === name);
+    const ico = b ? `<span style="width:16px;height:16px;border-radius:3px;background:${b.bg};color:${b.tc};font-size:8px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;margin-right:3px">${b.ic}</span>` : '';
+    return `<span style="display:inline-flex;align-items:center;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:500;background:#1e3a5f;color:#93c5fd">${ico}${name}<button onclick="actPageRemoveBrand(${idx},'${name.replace(/'/g,"\\'")}') " style="cursor:pointer;opacity:.5;font-size:12px;line-height:1;background:none;border:none;color:inherit;padding:0;margin-left:4px">×</button></span>`;
+  }).join('');
+
+  return `
+<div class="bc"><a onclick="go('pulse')">Pulse</a><span class="sep">›</span><a onclick="go('pulse-offers')"> New Offers</a><span class="sep">›</span><a onclick="go('pulse-offer-detail',${idx})"> ${o.name}</a><span class="sep">›</span> <span>Set Conditions</span></div>
+<div class="ph">
+  <div style="display:flex;align-items:center;gap:12px">
+    <div class="bi" style="background:${o.bg};color:${o.c};width:40px;height:40px;border-radius:10px;font-size:12px;flex-shrink:0">${o.ico}</div>
+    <div><h1>Set Conditions</h1><p>${o.name} · ${o.cat} · ${o.rate} cashback</p></div>
+  </div>
+  <div style="display:flex;align-items:center;gap:10px">
+    <div style="width:22px;height:22px;border-radius:50%;background:var(--t1);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center">1</div>
+    <span style="font-size:12px;font-weight:600">Set Conditions</span>
+    <div style="width:28px;height:1px;background:var(--bd)"></div>
+    <div style="width:22px;height:22px;border-radius:50%;border:1.5px solid var(--bd);color:var(--t3);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center">2</div>
+    <span style="font-size:12px;color:var(--t3)">Confirm &amp; Activate</span>
+  </div>
+</div>
+<div class="ct">
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+
+    <div class="card">
+      <div class="p-ch"><h3>Targeting Conditions</h3></div>
+      <div style="padding:18px">
+
+        <div style="margin-bottom:14px">
+          <label style="display:block;font-size:12px;font-weight:600;color:var(--t2);margin-bottom:5px">Category</label>
+          <select class="fi" style="width:100%">
+            <option selected>${o.cat}</option>
+            <option>Grocery &amp; Supermarket</option>
+            <option>Food &amp; Beverage</option>
+            <option>Fashion &amp; Apparel</option>
+            <option>Health &amp; Beauty</option>
+            <option>Electronics &amp; Tech</option>
+            <option>Fuel &amp; Automotive</option>
+          </select>
+        </div>
+
+        <div style="margin-bottom:14px">
+          <label style="display:block;font-size:12px;font-weight:600;color:var(--t2);margin-bottom:5px">Monthly spend (AED)</label>
+          <div class="g2" style="gap:8px">
+            <div>
+              <div style="font-size:10px;color:var(--t3);margin-bottom:3px">Min</div>
+              <select class="fi" style="width:100%"><option>AED 50</option><option selected>AED 100</option><option>AED 200</option><option>AED 500</option></select>
+            </div>
+            <div>
+              <div style="font-size:10px;color:var(--t3);margin-bottom:3px">Max</div>
+              <select class="fi" style="width:100%"><option>AED 2,000</option><option>AED 5,000</option><option selected>AED 10,000</option><option>No limit</option></select>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-bottom:14px">
+          <label style="display:block;font-size:12px;font-weight:600;color:var(--t2);margin-bottom:5px">Min transactions / month</label>
+          <select class="fi" style="width:100%"><option selected>1 txn/mo</option><option>2 txn/mo</option><option>3 txn/mo</option><option>4+ txn/mo</option></select>
+        </div>
+
+        <div style="margin-bottom:14px">
+          <label style="display:block;font-size:12px;font-weight:600;color:var(--t2);margin-bottom:5px">Look-back window</label>
+          <select class="fi" style="width:100%"><option>1 month</option><option>2 months</option><option selected>3 months</option><option>6 months</option></select>
+        </div>
+
+        <div>
+          <label style="display:block;font-size:12px;font-weight:600;color:var(--t2);margin-bottom:5px">Brand targeting <span style="font-weight:400;color:var(--t3)">— optional</span></label>
+          <div style="position:relative" id="act-brand-wrap">
+            <div style="display:flex;align-items:center;gap:8px;border:1px solid var(--bd);border-radius:var(--rs);padding:7px 10px;background:var(--sf)">
+              <svg width="12" height="12" fill="none" stroke="var(--t3)" viewBox="0 0 24 24" style="flex-shrink:0"><circle cx="11" cy="11" r="8" stroke-width="2.2"/><path d="M21 21l-4.35-4.35" stroke-width="2.2" stroke-linecap="round"/></svg>
+              <input id="act-brand-input" placeholder="Search brands…" autocomplete="off"
+                style="flex:1;border:none;background:none;font-size:12px;font-family:var(--f);color:var(--t1);outline:none"
+                oninput="actPageBrandInput(this.value,${idx})" onfocus="actPageBrandInput(this.value,${idx})" onblur="setTimeout(actPageCloseBrand,180)">
+            </div>
+            <div id="act-brand-drop" style="display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;background:var(--sf);border:1px solid var(--bd);border-radius:var(--rs);box-shadow:0 8px 24px rgba(0,0,0,.1);z-index:100;max-height:220px;overflow-y:auto"></div>
+          </div>
+          ${_actPageBrands.length ? `<div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:8px">${brandTagsHTML}</div>` : ''}
+        </div>
+
+      </div>
+    </div>
+
+    <div>
+      <div class="card p-mb16">
+        <div class="p-ch"><h3>Audience Estimate</h3></div>
+        <div style="padding:14px 18px">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px">
+            ${[
+              {l:'Matched customers',       v:o.match,    sub:'on your card base',        green:false},
+              {l:'Est. activation rate',    v:'31%',      sub:'~35,300 earning cashback', green:true},
+              {l:'Avg cashback / customer', v:'AED 38',   sub:'per qualifying month',     green:false},
+              {l:'Est. cashback / month',   v:'AED 1.3M', sub:'at current conditions',    green:true},
+            ].map(k=>`
+              <div style="background:var(--t1);border-radius:var(--rs);padding:12px 14px">
+                <div style="font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;color:rgba(255,255,255,.35);margin-bottom:5px">${k.l}</div>
+                <div style="font-size:17px;font-weight:700;color:${k.green?'var(--ac)':'#fff'};letter-spacing:-.03em">${k.v}</div>
+                <div style="font-size:10px;color:rgba(255,255,255,.4);margin-top:2px">${k.sub}</div>
+              </div>`).join('')}
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-g" style="flex:1;justify-content:center" onclick="go('pulse-offer-detail',${idx})">← Back</button>
+        <button class="btn btn-p" style="flex:2;justify-content:center" onclick="actPageGoStep(${idx},2)">Review &amp; confirm →</button>
+      </div>
+    </div>
+
+  </div>
+</div>`;
+}
+
+function _pgActivateConfirm(o, idx) {
+  const brands = _actPageBrands;
+  return `
+<div class="bc"><a onclick="go('pulse')">Pulse</a><span class="sep">›</span><a onclick="go('pulse-offers')"> New Offers</a><span class="sep">›</span><a onclick="go('pulse-offer-detail',${idx})"> ${o.name}</a><span class="sep">›</span> <span>Confirm</span></div>
+<div class="ph">
+  <div style="display:flex;align-items:center;gap:12px">
+    <div class="bi" style="background:${o.bg};color:${o.c};width:40px;height:40px;border-radius:10px;font-size:12px;flex-shrink:0">${o.ico}</div>
+    <div><h1>Confirm &amp; Activate</h1><p>${o.name} · ${o.cat} · ${o.rate} cashback</p></div>
+  </div>
+  <div style="display:flex;align-items:center;gap:10px">
+    <div style="width:22px;height:22px;border-radius:50%;background:var(--ac);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center">✓</div>
+    <span style="font-size:12px;font-weight:600;color:var(--ad)">Set Conditions</span>
+    <div style="width:28px;height:1px;background:var(--ac)"></div>
+    <div style="width:22px;height:22px;border-radius:50%;background:var(--t1);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center">2</div>
+    <span style="font-size:12px;font-weight:600">Confirm &amp; Activate</span>
+  </div>
+</div>
+<div class="ct">
+
+  <div style="background:var(--al);border:1px solid #a7f3d0;border-radius:var(--r);padding:12px 16px;display:flex;gap:10px;font-size:12px;color:var(--ad);margin-bottom:20px">
+    <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="flex-shrink:0;margin-top:1px"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke-width="2"/></svg>
+    This offer has been reviewed and approved by Lune. Activating will make cashback live on your card base immediately.
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 300px;gap:20px;align-items:start">
+
+    <div class="card">
+      <div class="p-ch"><h3>Activation Summary</h3></div>
+      <div style="padding:8px 0">
+        ${[
+          ['Merchant',          o.name],
+          ['Category',          o.cat],
+          ['Cashback rate',     o.rate],
+          ['Merchant budget',   o.budget],
+          ['Min spend',         o.minSpend || 'AED 100'],
+          ['Spend range',       'AED 100 – AED 10,000 / mo'],
+          ['Min transactions',  '1 txn / mo'],
+          ['Look-back',         '3 months'],
+          ['Brand targeting',   brands.length ? brands.join(', ') : 'All brands in category'],
+          ['Matched customers', o.match],
+          ['Goes live',         'Immediately upon activation'],
+          ['Settlement',        'Monthly — Lune reconciles with merchant'],
+        ].map(([k,v]) => `
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 18px;border-bottom:1px solid var(--bl)">
+            <span style="font-size:12px;color:var(--t3)">${k}</span>
+            <span style="font-size:12px;font-weight:500">${v}</span>
+          </div>`).join('')}
+      </div>
+    </div>
+
+    <div>
+      <button class="btn btn-p" style="width:100%;justify-content:center;padding:11px;font-size:13px;margin-bottom:8px" onclick="actPageConfirmActivate(${idx})">
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Activate Campaign
+      </button>
+      <button class="btn btn-g" style="width:100%;justify-content:center;margin-bottom:8px" onclick="actPageGoStep(${idx},1)">← Edit conditions</button>
+      <button class="btn btn-g" style="width:100%;justify-content:center" onclick="actPageShowReject(${idx})">Reject offer</button>
+
+      <div id="act-reject-panel" style="display:none;margin-top:12px;background:#fee2e2;border:1px solid #fca5a5;border-radius:var(--rs);padding:14px 16px">
+        <div style="font-size:12px;font-weight:600;color:#ef4444;margin-bottom:8px">Leave a comment for the merchant</div>
+        <textarea id="act-reject-comment" class="fi" rows="3" style="width:100%;resize:none;margin-bottom:10px" placeholder="e.g. Budget too low for current network reach. Please resubmit with a minimum AED 50,000 budget."></textarea>
+        <div style="display:flex;gap:8px;justify-content:flex-end">
+          <button class="btn btn-g btn-sm" onclick="document.getElementById('act-reject-panel').style.display='none'">Cancel</button>
+          <button class="btn btn-sm" style="background:#ef4444;color:#fff;border:none" onclick="actPageConfirmReject(${idx})">Send &amp; reject</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>`;
+}
+
+// ── Activate page helpers ─────────────────────────────────────────────────────
+function actPageGoStep(idx, step) {
+  _actPageStep = step;
+  document.getElementById('main-area').innerHTML = pgPulseActivate(idx);
+  window.scrollTo(0, 0);
+}
+
+function actPageBrandInput(q, idx) {
+  const drop = document.getElementById('act-brand-drop');
+  if (!drop) return;
+  const val = q.trim().toLowerCase();
+  const filtered = val ? M_BRANDS.filter(b => b.name.toLowerCase().includes(val) || b.cat.toLowerCase().includes(val)) : M_BRANDS;
+  if (!filtered.length) { drop.innerHTML = '<div style="padding:12px;text-align:center;font-size:12px;color:var(--t3)">No brands found</div>'; drop.style.display = 'block'; return; }
+  const byCat = {};
+  filtered.forEach(b => { if (!byCat[b.cat]) byCat[b.cat] = []; byCat[b.cat].push(b); });
+  let html = '';
+  Object.entries(byCat).forEach(([cat, brands]) => {
+    html += `<div style="font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--t3);padding:7px 12px 4px;background:var(--bg);position:sticky;top:0">${cat}</div>`;
+    brands.forEach(b => {
+      const sel = _actPageBrands.includes(b.name);
+      html += `<div onclick="actPageAddBrand(${idx},'${b.name.replace(/'/g,"\\'")}') " style="display:flex;align-items:center;gap:9px;padding:7px 12px;cursor:pointer;border-top:1px solid var(--bd);${sel?'opacity:.4;pointer-events:none':''}" onmouseenter="this.style.background='var(--bg)'" onmouseleave="this.style.background=''">
+        <div style="width:26px;height:26px;border-radius:5px;background:${b.bg};color:${b.tc};display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0">${b.ic}</div>
+        <div style="flex:1;font-size:12px;font-weight:500">${b.name}</div>
+        <span style="font-size:10px;font-weight:600;color:${sel?'var(--ac)':'var(--blue)'};background:${sel?'var(--al)':'var(--bluel)'};padding:2px 7px;border-radius:3px">${sel?'✓ Added':'+ Add'}</span>
+      </div>`;
+    });
+  });
+  drop.innerHTML = html;
+  drop.style.display = 'block';
+}
+
+function actPageAddBrand(idx, name) {
+  if (!_actPageBrands.includes(name)) _actPageBrands.push(name);
+  actPageCloseBrand();
+  const inp = document.getElementById('act-brand-input');
+  if (inp) inp.value = '';
+  document.getElementById('main-area').innerHTML = pgPulseActivate(idx);
+}
+
+function actPageRemoveBrand(idx, name) {
+  _actPageBrands = _actPageBrands.filter(n => n !== name);
+  document.getElementById('main-area').innerHTML = pgPulseActivate(idx);
+}
+
+function actPageCloseBrand() {
+  const d = document.getElementById('act-brand-drop');
+  if (d) d.style.display = 'none';
+}
+
+document.addEventListener('click', e => {
+  const wrap = document.getElementById('act-brand-wrap');
+  if (wrap && !wrap.contains(e.target)) actPageCloseBrand();
+});
+
+function actPageShowReject(idx) {
+  const panel = document.getElementById('act-reject-panel');
+  if (panel) { panel.style.display = 'block'; panel.scrollIntoView({behavior:'smooth',block:'nearest'}); }
+}
+
+function actPageConfirmReject(idx) {
+  const o = PULSE_OFFERS[idx];
+  const comment = document.getElementById('act-reject-comment')?.value?.trim() || '';
+  _actPageStep = 1;
+  _actPageBrands = [];
+  document.getElementById('main-area').innerHTML = `
+    <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 32px;text-align:center">
+      <div style="width:56px;height:56px;border-radius:50%;background:#fee2e2;display:flex;align-items:center;justify-content:center;margin-bottom:16px">
+        <svg width="24" height="24" fill="none" stroke="#ef4444" stroke-width="2.5" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12" stroke-linecap="round"/></svg>
+      </div>
+      <div style="font-size:20px;font-weight:700;margin-bottom:8px">Offer Rejected</div>
+      <p style="font-size:13px;color:var(--t3);max-width:380px;line-height:1.7;margin-bottom:${comment?'16px':'24px'}">
+        <strong style="color:var(--t1)">${o.name}</strong> has been rejected.${comment?' Your comment has been sent to the merchant.':''}
+      </p>
+      ${comment?`<div style="background:var(--bg);border-radius:var(--rs);padding:12px 16px;font-size:12px;color:var(--t2);max-width:400px;line-height:1.6;margin-bottom:24px;text-align:left;border-left:3px solid #ef4444">"${comment}"</div>`:''}
+      <button class="btn btn-g" onclick="go('pulse-offers')">Back to offers</button>
+    </div>`;
+  window.scrollTo(0,0);
+}
+
+function actPageConfirmActivate(idx) {
+  const o = PULSE_OFFERS[idx];
+  _actPageStep = 1;
+  _actPageBrands = [];
+  document.getElementById('main-area').innerHTML = `
+    <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 32px;text-align:center">
+      <div style="width:64px;height:64px;border-radius:50%;background:var(--al);display:flex;align-items:center;justify-content:center;margin-bottom:20px">
+        <svg width="28" height="28" fill="none" stroke="var(--ac)" stroke-width="2.5" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div style="font-size:22px;font-weight:700;letter-spacing:-.3px;margin-bottom:8px">Campaign Activated</div>
+      <p style="font-size:13px;color:var(--t3);max-width:380px;line-height:1.7;margin-bottom:24px">
+        <strong style="color:var(--t1)">${o.name}</strong> is now live for matched customers. Cashback will apply on their next qualifying transaction.
+      </p>
+      <div style="display:inline-flex;flex-direction:column;gap:8px;background:var(--bg);border-radius:var(--r);padding:16px 24px;margin-bottom:24px;text-align:left;min-width:280px">
+        ${[['Merchant',o.name],['Cashback rate',o.rate],['Matched customers',o.match],['Budget',o.budget],['Settlement','Monthly via Lune']].map(([k,v])=>`
+          <div style="display:flex;justify-content:space-between;gap:24px;font-size:12px">
+            <span style="color:var(--t3)">${k}</span><span style="font-weight:600">${v}</span>
+          </div>`).join('')}
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-g" onclick="go('pulse-offers')">Back to offers</button>
+        <button class="btn btn-p" onclick="go('pulse-campaigns')">View Active Campaigns →</button>
+      </div>
+    </div>`;
+  window.scrollTo(0,0);
+}
+
+// ── Pulse: Active Campaigns ──────────────────────────────────────────────────
+function pgPulseCampaigns() {
+  return `
+<div class="bc"><a onclick="go('pulse')">Pulse</a><span class="sep">›</span> <span>Active Campaigns</span></div>
+<div class="ph"><div><h1>Active Campaigns</h1><p>Live on your card base. Cashback is merchant-funded and settled monthly.</p></div></div>
+<div class="ct">
+  <div class="p-g4 p-mb20">
+    <div class="p-sc"><div class="p-scl">Active Campaigns</div><div class="p-scv">2</div><div class="p-scs">Live on customer base</div></div>
+    <div class="p-sc"><div class="p-scl">Total Budget Deployed</div><div class="p-scv">AED 360K</div><div class="p-scs">Across all merchants</div></div>
+    <div class="p-sc"><div class="p-scl">Total Cashback Paid</div><div class="p-scv">AED 141,200</div><div class="p-scs"><span class="p-sup">↑ 22%</span> vs last month</div></div>
+    <div class="p-sc"><div class="p-scl">Qualifying Transactions</div><div class="p-scv">1,980</div><div class="p-scs">This month</div></div>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:12px">
+    ${[
+      {ico:'CR',bg:'#e8f5ee',c:'#003D1F',key:'carrefour',title:'Summer Grocery Cashback',sub:'Carrefour UAE · 8% cashback · Grocery & Supermarket',pct:68,paid:'AED 108,800',budget:'AED 160,000',txns:'740',period:'Jul 1 – Aug 31'},
+      {ico:'NO',bg:'#fff8e6',c:'#b45309',key:'noon',title:'noon Summer Shopping Festival',sub:'noon · 6% cashback · Online Shopping',pct:41,paid:'AED 82,000',budget:'AED 200,000',txns:'1,240',period:'Jul 1 – Aug 31'},
+    ].map(camp=>`
+      <div class="card" style="cursor:pointer" onclick="go('pulse-campaign-detail','${camp.key}')">
+        <div class="p-ch">
+          <div style="display:flex;align-items:center;gap:10px">
+            <div style="width:36px;height:36px;border-radius:8px;background:${camp.bg};color:${camp.c};display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700">${camp.ico}</div>
+            <div>
+              <div style="font-size:13px;font-weight:600">${camp.title}</div>
+              <div style="font-size:11px;color:var(--t3)">${camp.sub}</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <span class="badge bg2" style="background:var(--al);color:var(--ad)"><span style="width:5px;height:5px;border-radius:50%;background:currentColor;margin-right:3px;display:inline-block"></span>Live</span>
+            <button class="btn btn-p btn-sm" onclick="event.stopPropagation();go('pulse-campaign-detail','${camp.key}')">View Dashboard →</button>
+          </div>
+        </div>
+        <div style="padding:14px 18px">
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:12px">
+            <div><div style="font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:.3px;margin-bottom:3px">Budget</div><div style="font-size:15px;font-weight:700">${camp.budget}</div></div>
+            <div><div style="font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:.3px;margin-bottom:3px">Paid out</div><div style="font-size:15px;font-weight:700;color:var(--ac)">${camp.paid}</div></div>
+            <div><div style="font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:.3px;margin-bottom:3px">Transactions</div><div style="font-size:15px;font-weight:700">${camp.txns}</div></div>
+            <div><div style="font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:.3px;margin-bottom:3px">Period</div><div style="font-size:13px;font-weight:500">${camp.period}</div></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--t3);margin-bottom:4px"><span>Budget utilisation</span><span>${camp.pct}%</span></div>
+          <div style="height:5px;background:var(--bl);border-radius:3px;overflow:hidden"><div style="width:${camp.pct}%;height:100%;background:var(--ac);border-radius:3px"></div></div>
+        </div>
+      </div>`).join('')}
+  </div>
+</div>`;
+}
+
+// ── Pulse: Campaign Detail ────────────────────────────────────────────────────
+function pgPulseCampaignDetail(key) {
+  const d = CAMPAIGNS[key] || CAMPAIGNS.carrefour;
+  const maxW = Math.max(...d.weekly.filter(w=>w.paid).map(w=>w.paid));
+  return `
+<div class="bc"><a onclick="go('pulse')">Pulse</a><span class="sep">›</span><a onclick="go('pulse-campaigns')"> Active Campaigns</a><span class="sep">›</span> <span>${d.title}</span></div>
+<div class="ph">
+  <div style="display:flex;align-items:center;gap:10px">
+    <div style="width:36px;height:36px;border-radius:8px;background:${d.icoBg};color:${d.icoC};display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700">${d.ico}</div>
+    <div><h1>${d.title}</h1><p>${d.meta}</p></div>
+  </div>
+  <span class="badge" style="background:var(--al);color:var(--ad);font-size:11px"><span style="width:5px;height:5px;border-radius:50%;background:currentColor;margin-right:4px;display:inline-block"></span>Live</span>
+</div>
+<div class="ct">
+  <div class="p-g4 p-mb16" style="grid-template-columns:repeat(5,1fr)">
+    <div class="p-sc"><div class="p-scl">Total Budget</div><div class="p-scv">${d.budget}</div><div class="p-scs">Committed</div></div>
+    <div class="p-sc"><div class="p-scl">Cashback Paid Out</div><div class="p-scv" style="color:var(--ac)">${d.paid}</div><div class="p-scs">To date</div></div>
+    <div class="p-sc">
+      <div class="p-scl">Budget Utilisation</div>
+      <div class="p-scv">${d.utilPct}%</div>
+      <div style="margin-top:6px;height:4px;background:var(--bl);border-radius:2px;overflow:hidden"><div style="height:100%;width:${d.utilPct}%;background:var(--ac);border-radius:2px"></div></div>
+    </div>
+    <div class="p-sc"><div class="p-scl">Qualifying Transactions</div><div class="p-scv">${d.txns}</div><div class="p-scs">This campaign</div></div>
+    <div class="p-sc"><div class="p-scl">Cashback Redeemers</div><div class="p-scv">${d.redeemers}</div><div class="p-scs">Customers who redeemed</div></div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 300px;gap:16px;margin-bottom:16px">
+    <div class="card">
+      <div class="p-ch"><h3>Budget Burn</h3><span style="font-size:11px;color:var(--t3)">${d.burnLabel}</span></div>
+      <div style="padding:14px 18px 6px">
+        <div style="height:10px;background:var(--bl);border-radius:5px;overflow:hidden;margin-bottom:16px">
+          <div style="height:100%;width:${d.utilPct}%;background:var(--ac);border-radius:5px"></div>
+        </div>
+      </div>
+      <div style="padding:0 18px 14px;display:flex;flex-direction:column;gap:10px">
+        ${d.weekly.map(w=>{
+          const barW = w.paid ? Math.round((w.paid/maxW)*100) : 0;
+          return `<div style="display:grid;grid-template-columns:100px 1fr 90px;align-items:center;gap:10px">
+            <span style="font-size:10px;color:var(--t3)">${w.label}</span>
+            <div style="height:6px;background:var(--bl);border-radius:3px;overflow:hidden"><div style="height:100%;width:${barW}%;background:var(--ac);border-radius:3px"></div></div>
+            <span style="font-size:11px;font-weight:500;text-align:right">${w.paid ? 'AED ' + w.paid.toLocaleString() : '—'}</span>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>
+    <div class="card">
+      <div class="p-ch"><h3>Offer Details</h3></div>
+      <div style="padding:8px 0">
+        ${d.details.map(([k,v])=>`
+          <div class="p-kv-row" style="padding:8px 18px">
+            <span class="p-kv-k">${k}</span><span class="p-kv-v">${v}</span>
+          </div>`).join('')}
+      </div>
+    </div>
+  </div>
+
+  <div class="g2 p-mb16">
+    <div class="card">
+      <div class="p-ch"><h3>Customer Engagement Funnel</h3></div>
+      <div style="padding:14px 18px;display:flex;flex-direction:column;gap:10px">
+        ${d.funnel.map(f=>`
+          <div style="display:grid;grid-template-columns:160px 1fr 60px 48px;align-items:center;gap:10px">
+            <span style="font-size:12px;color:var(--t2)">${f.label}</span>
+            <div style="height:7px;background:var(--bl);border-radius:4px;overflow:hidden">
+              <div style="height:100%;width:${f.pct}%;background:var(--ac);border-radius:4px"></div>
+            </div>
+            <span style="font-size:12px;font-weight:600;text-align:right">${f.val.toLocaleString()}</span>
+            <span style="font-size:11px;color:var(--t3);text-align:right">${f.pct}%</span>
+          </div>`).join('')}
+      </div>
+    </div>
+    <div class="card">
+      <div class="p-ch"><h3>Per-Customer Metrics</h3><span style="font-size:11px;color:var(--t3)">Cohort averages</span></div>
+      <div>
+        ${d.metrics.map(([k,v])=>`
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 18px;border-bottom:1px solid var(--bl)">
+            <span style="font-size:12px;color:var(--t3)">${k}</span>
+            <span style="font-size:13px;font-weight:700;font-family:var(--m)">${v}</span>
+          </div>`).join('')}
+      </div>
+    </div>
+  </div>
+
+  <div class="tc">
+    <div class="th2"><span class="tht">Transaction Log</span><span style="font-size:11px;color:var(--t3)">${d.txnFooter}</span></div>
+    <table>
+      <thead><tr><th>Date</th><th>Reference</th><th>Spend</th><th>Cashback</th><th>Status</th></tr></thead>
+      <tbody>
+        ${d.txnList.map(t=>`<tr>
+          <td style="color:var(--t3);font-size:11px">${t.date}</td>
+          <td style="font-family:var(--m);font-size:11px">${t.ref}</td>
+          <td>${t.spend}</td>
+          <td style="color:var(--ac);font-weight:600">${t.cashback}</td>
+          <td><span class="badge ${t.status==='Paid'?'bg2':'bo2'}" style="${t.status==='Paid'?'background:var(--al);color:var(--ad)':'background:var(--orangel);color:#92400e'}">${t.status}</span></td>
+        </tr>`).join('')}
+      </tbody>
+    </table>
+  </div>
+</div>`;
+}
+
+
+// ── Pulse: Activation Modal ──────────────────────────────────────────────────
+let _activatingOffer = null;
+let _actStep = 1;
+const _actSegState = {};
+
+function openActivateModal(offerOrIdx) {
+  const offer = typeof offerOrIdx === 'number' ? PULSE_OFFERS[offerOrIdx] : offerOrIdx;
+  _activatingOffer = offer;
+  _actStep = 1;
+  _actSegState.brands = [];
+  _actSegState.comment = '';
+  document.getElementById('modal-c').innerHTML = renderActivateModal(offer, 1);
+  document.getElementById('modal').querySelector('.ml').classList.add('wide');
+  document.getElementById('modal').classList.add('open');
+}
+
+function renderActivateModal(o, step) {
+  const steps = ['Set Conditions', 'Confirm & Activate'];
+  const stepperHTML = `
+    <div class="act-steps">
+      ${steps.map((s,i)=>{
+        const n = i+1;
+        const cls = n < step ? 'done' : n === step ? 'cur' : '';
+        const lineClass = n < step ? 'done' : '';
+        return `<div class="act-step ${cls}">
+          <div class="act-sn">${n < step ? '✓' : n}</div>
+          <span>${s}</span>
+        </div>${i < steps.length-1 ? `<div class="act-line ${lineClass}"></div>` : ''}`;
+      }).join('')}
+    </div>`;
+
+  const offerCard = `
+    <div class="offer-summary-card">
+      <div class="osc-ico" style="background:${o.bg};color:${o.c}">${o.ico}</div>
+      <div>
+        <div class="osc-name">${o.name}</div>
+        <div class="osc-meta">${o.cat} · ${o.rate} cashback</div>
+      </div>
+      <div class="osc-stats">
+        <div class="osc-stat"><div class="osc-stat-v">${o.match}</div><div class="osc-stat-l">matched customers</div></div>
+        <div class="osc-stat"><div class="osc-stat-v">${o.budget}</div><div class="osc-stat-l">merchant budget</div></div>
+        <div class="osc-stat"><div class="osc-stat-v">${o.rate}</div><div class="osc-stat-l">cashback rate</div></div>
+      </div>
+    </div>`;
+
+  let panelHTML = '';
+
+  // ── Step 1: Targeting conditions + brand search + audience estimate ──────────
+  if (step === 1) {
+    const bSelBrands = _actSegState.brands || [];
+    const brandTagsHTML = bSelBrands.map(name => {
+      const b = M_BRANDS.find(x => x.name === name);
+      const ico = b ? `<span style="width:16px;height:16px;border-radius:3px;background:${b.bg};color:${b.tc};font-size:8px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;margin-right:3px">${b.ic}</span>` : '';
+      return `<span style="display:inline-flex;align-items:center;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:500;background:#1e3a5f;color:#93c5fd">${ico}${name}<button onclick="actRemoveBrand('${name.replace(/'/g,"\\'")}') " style="cursor:pointer;opacity:.5;font-size:12px;line-height:1;background:none;border:none;color:inherit;padding:0;margin-left:4px">×</button></span>`;
+    }).join('');
+
+    panelHTML = `
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+
+        <div>
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--t3);margin-bottom:12px">Targeting Conditions</div>
+
+          <div style="margin-bottom:12px">
+            <label style="font-size:11px;font-weight:600;color:var(--t2);display:block;margin-bottom:4px">Category</label>
+            <select class="fi" style="width:100%" id="act-cat">
+              <option selected>${o.cat}</option>
+              <option>Grocery &amp; Supermarket</option>
+              <option>Food &amp; Beverage</option>
+              <option>Fashion &amp; Apparel</option>
+              <option>Health &amp; Beauty</option>
+              <option>Electronics &amp; Tech</option>
+              <option>Fuel &amp; Automotive</option>
+            </select>
+          </div>
+
+          <div style="margin-bottom:12px">
+            <label style="font-size:11px;font-weight:600;color:var(--t2);display:block;margin-bottom:4px">Monthly spend (AED)</label>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+              <div>
+                <div style="font-size:10px;color:var(--t3);margin-bottom:3px">Min</div>
+                <select class="fi" style="width:100%"><option>AED 50</option><option selected>AED 100</option><option>AED 200</option><option>AED 500</option></select>
+              </div>
+              <div>
+                <div style="font-size:10px;color:var(--t3);margin-bottom:3px">Max</div>
+                <select class="fi" style="width:100%"><option>AED 2,000</option><option>AED 5,000</option><option selected>AED 10,000</option><option>No limit</option></select>
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-bottom:12px">
+            <label style="font-size:11px;font-weight:600;color:var(--t2);display:block;margin-bottom:4px">Min transactions / month</label>
+            <select class="fi" style="width:100%"><option selected>1 txn/mo</option><option>2 txn/mo</option><option>3 txn/mo</option><option>4+ txn/mo</option></select>
+          </div>
+
+          <div style="margin-bottom:12px">
+            <label style="font-size:11px;font-weight:600;color:var(--t2);display:block;margin-bottom:4px">Look-back window</label>
+            <select class="fi" style="width:100%"><option>1 month</option><option>2 months</option><option selected>3 months</option><option>6 months</option></select>
+          </div>
+
+          <div>
+            <label style="font-size:11px;font-weight:600;color:var(--t2);display:block;margin-bottom:4px">Brand targeting <span style="font-weight:400;color:var(--t3)">— optional</span></label>
+            <div style="position:relative" id="act-brand-wrap">
+              <div style="display:flex;align-items:center;gap:8px;border:1px solid var(--bd);border-radius:var(--rs);padding:7px 10px;background:var(--sf)">
+                <svg width="12" height="12" fill="none" stroke="var(--t3)" viewBox="0 0 24 24" style="flex-shrink:0"><circle cx="11" cy="11" r="8" stroke-width="2.2"/><path d="M21 21l-4.35-4.35" stroke-width="2.2" stroke-linecap="round"/></svg>
+                <input id="act-brand-input" placeholder="Search brands…" autocomplete="off"
+                  style="flex:1;border:none;background:none;font-size:12px;font-family:var(--f);color:var(--t1);outline:none"
+                  oninput="actBrandInput(this.value)" onfocus="actBrandInput(this.value)" onblur="setTimeout(actCloseBrand,180)">
+              </div>
+              <div id="act-brand-drop" style="display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;background:var(--sf);border:1px solid var(--bd);border-radius:var(--rs);box-shadow:0 8px 24px rgba(0,0,0,.1);z-index:400;max-height:200px;overflow-y:auto"></div>
+            </div>
+            ${bSelBrands.length ? `<div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:8px">${brandTagsHTML}</div>` : ''}
+          </div>
+        </div>
+
+        <div>
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--t3);margin-bottom:12px">Audience Estimate</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px">
+            ${[
+              {l:'Matched customers',       v:'114,000',  sub:'on your card base',       green:false},
+              {l:'Est. activation rate',    v:'31%',      sub:'~35,300 earning cashback', green:true},
+              {l:'Avg cashback / customer', v:'AED 38',   sub:'per qualifying month',     green:false},
+              {l:'Est. cashback / month',   v:'AED 1.3M', sub:'at current conditions',    green:true},
+            ].map(k=>`
+              <div style="background:var(--t1);border-radius:var(--rs);padding:12px 14px">
+                <div style="font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;color:rgba(255,255,255,.35);margin-bottom:5px">${k.l}</div>
+                <div style="font-size:18px;font-weight:700;color:${k.green?'var(--ac)':'#fff'};letter-spacing:-.03em">${k.v}</div>
+                <div style="font-size:10px;color:rgba(255,255,255,.4);margin-top:2px">${k.sub}</div>
+              </div>`).join('')}
+          </div>
+        </div>
+
+      </div>
+
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:20px">
+        <button class="btn btn-g" onclick="closeModal()">Cancel</button>
+        <button class="btn btn-p" onclick="actGoStep(2)">Review &amp; confirm →</button>
+      </div>`;
+  }
+
+  // ── Step 2: Confirm & Activate (or Reject with comment) ─────────────────────
+  if (step === 2) {
+    const brands = _actSegState.brands || [];
+    panelHTML = `
+      <div style="background:var(--al);border:1px solid #a7f3d0;border-radius:var(--rs);padding:12px 16px;display:flex;gap:10px;font-size:12px;color:var(--ad);margin-bottom:20px">
+        <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="flex-shrink:0;margin-top:1px"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke-width="2"/></svg>
+        This offer has been reviewed and approved by Lune. Activating will make cashback live on your card base immediately.
+      </div>
+
+      <div style="background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);overflow:hidden;margin-bottom:20px">
+        <div style="padding:10px 18px;background:var(--bg);font-size:11px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.4px">Activation Summary</div>
+        ${[
+          ['Merchant',          o.name],
+          ['Category',          o.cat],
+          ['Cashback rate',     o.rate],
+          ['Merchant budget',   o.budget],
+          ['Min spend',         o.minSpend || 'AED 100'],
+          ['Spend range',       'AED 100 – AED 10,000 / mo'],
+          ['Min transactions',  '1 txn / mo'],
+          ['Look-back',         '3 months'],
+          ['Brand targeting',   brands.length ? brands.join(', ') : 'All brands in category'],
+          ['Matched customers', o.match],
+          ['Goes live',         'Immediately upon activation'],
+          ['Settlement',        'Monthly — Lune reconciles with merchant'],
+        ].map(([k,v]) => `
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 18px;border-bottom:1px solid var(--bl)">
+            <span style="font-size:12px;color:var(--t3)">${k}</span>
+            <span style="font-size:12px;font-weight:500">${v}</span>
+          </div>`).join('')}
+      </div>
+
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px">
+        <div style="display:flex;align-items:center;gap:8px;flex:1">
+          <button class="btn btn-g" onclick="actGoStep(1)">← Back</button>
+          <button class="btn btn-sm" style="background:var(--redl,#fee2e2);color:var(--red,#ef4444);border:1px solid #fca5a5" onclick="actShowReject()">Reject offer</button>
+        </div>
+        <button class="btn btn-p" style="padding:9px 20px;font-size:13px" onclick="confirmActivate()">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Activate Campaign
+        </button>
+      </div>
+
+      <div id="act-reject-panel" style="display:none;margin-top:16px;background:var(--redl,#fee2e2);border:1px solid #fca5a5;border-radius:var(--rs);padding:14px 16px">
+        <div style="font-size:12px;font-weight:600;color:var(--red,#ef4444);margin-bottom:8px">Reject offer — add a comment for the merchant</div>
+        <textarea id="act-reject-comment" class="fi" rows="3" style="width:100%;resize:none;margin-bottom:10px" placeholder="e.g. Budget too low for current network reach. Please resubmit with a minimum AED 50,000 budget."></textarea>
+        <div style="display:flex;justify-content:flex-end;gap:8px">
+          <button class="btn btn-g btn-sm" onclick="document.getElementById('act-reject-panel').style.display='none'">Cancel</button>
+          <button class="btn btn-sm" style="background:var(--red,#ef4444);color:#fff;border:none" onclick="confirmReject()">Confirm rejection</button>
+        </div>
+      </div>`;
+  }
+
+  return `
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px">
+      <div>
+        <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--t3);margin-bottom:4px">Activate Offer</div>
+        <div style="font-size:18px;font-weight:700;letter-spacing:-.3px">${o.name}</div>
+      </div>
+      <button onclick="closeModal()" style="background:none;border:none;cursor:pointer;color:var(--t3);padding:4px">
+        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    ${stepperHTML}
+    ${offerCard}
+    ${panelHTML}`;
+}
+
+function actGoStep(n) {
+  _actStep = n;
+  document.getElementById('modal-c').innerHTML = renderActivateModal(_activatingOffer, n);
+}
+
+// ── Bank portal activation: brand search ─────────────────────────────────────
+function actBrandInput(q) {
+  const drop = document.getElementById('act-brand-drop');
+  if (!drop) return;
+  const val = q.trim().toLowerCase();
+  const filtered = val ? M_BRANDS.filter(b => b.name.toLowerCase().includes(val) || b.cat.toLowerCase().includes(val)) : M_BRANDS;
+  if (!filtered.length) { drop.innerHTML = '<div style="padding:12px;text-align:center;font-size:12px;color:var(--t3)">No brands found</div>'; drop.style.display = 'block'; return; }
+  const byCat = {};
+  filtered.forEach(b => { if (!byCat[b.cat]) byCat[b.cat] = []; byCat[b.cat].push(b); });
+  let html = '';
+  Object.entries(byCat).forEach(([cat, brands]) => {
+    html += `<div style="font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--t3);padding:7px 12px 4px;background:var(--bg);position:sticky;top:0">${cat}</div>`;
+    brands.forEach(b => {
+      const sel = (_actSegState.brands||[]).includes(b.name);
+      html += `<div onclick="actAddBrand('${b.name.replace(/'/g,"\\'")}','${b.ic}','${b.bg}','${b.tc}')" style="display:flex;align-items:center;gap:9px;padding:7px 12px;cursor:pointer;border-top:1px solid var(--bd);${sel?'opacity:.4;pointer-events:none':''}" onmouseenter="this.style.background='var(--bg)'" onmouseleave="this.style.background=''">
+        <div style="width:26px;height:26px;border-radius:5px;background:${b.bg};color:${b.tc};display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0">${b.ic}</div>
+        <div style="flex:1;font-size:12px;font-weight:500">${b.name}</div>
+        <span style="font-size:10px;font-weight:600;color:${sel?'var(--ac)':'var(--blue)'};background:${sel?'var(--al)':'var(--bluel)'};padding:2px 7px;border-radius:3px">${sel?'✓ Added':'+ Add'}</span>
+      </div>`;
+    });
+  });
+  drop.innerHTML = html;
+  drop.style.display = 'block';
+}
+
+function actAddBrand(name) {
+  if (!_actSegState.brands) _actSegState.brands = [];
+  if (!_actSegState.brands.includes(name)) _actSegState.brands.push(name);
+  actCloseBrand();
+  const inp = document.getElementById('act-brand-input');
+  if (inp) inp.value = '';
+  actGoStep(1);
+}
+
+function actRemoveBrand(name) {
+  if (!_actSegState.brands) return;
+  _actSegState.brands = _actSegState.brands.filter(n => n !== name);
+  actGoStep(1);
+}
+
+function actCloseBrand() {
+  const d = document.getElementById('act-brand-drop');
+  if (d) d.style.display = 'none';
+}
+
+document.addEventListener('click', e => {
+  const wrap = document.getElementById('act-brand-wrap');
+  if (wrap && !wrap.contains(e.target)) actCloseBrand();
+});
+
+function actShowReject() {
+  const panel = document.getElementById('act-reject-panel');
+  if (panel) { panel.style.display = 'block'; panel.scrollIntoView({behavior:'smooth',block:'nearest'}); }
+}
+
+function confirmReject() {
+  const comment = document.getElementById('act-reject-comment')?.value?.trim() || '';
+  const o = _activatingOffer;
+  document.getElementById('modal-c').innerHTML = `
+    <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 32px;text-align:center">
+      <div style="width:56px;height:56px;border-radius:50%;background:#fee2e2;display:flex;align-items:center;justify-content:center;margin-bottom:16px">
+        <svg width="24" height="24" fill="none" stroke="#ef4444" stroke-width="2.5" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12" stroke-linecap="round"/></svg>
+      </div>
+      <div style="font-size:18px;font-weight:700;margin-bottom:8px">Offer Rejected</div>
+      <div style="font-size:13px;color:var(--t3);max-width:360px;line-height:1.7;margin-bottom:20px">
+        <strong style="color:var(--t1)">${o.name}</strong> has been rejected.
+        ${comment ? `Your comment has been sent to the merchant.` : ''}
+      </div>
+      ${comment ? `<div style="background:var(--bg);border-radius:var(--rs);padding:12px 16px;font-size:12px;color:var(--t2);max-width:400px;line-height:1.6;margin-bottom:20px;text-align:left;border-left:3px solid #ef4444">"${comment}"</div>` : ''}
+      <button class="btn btn-g" onclick="closeModal()">Close</button>
+    </div>`;
+}
+
+function confirmActivate() {
+  const o = _activatingOffer;
+  document.getElementById('modal-c').innerHTML = `
+    <div class="success-state">
+      <div class="success-icon">
+        <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" style="color:var(--ad)">
+          <path d="M20 6L9 17l-5-5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div style="font-size:20px;font-weight:700;letter-spacing:-.3px;margin-bottom:8px">Campaign Activated</div>
+      <div style="font-size:13px;color:var(--t3);max-width:360px;margin:0 auto 24px;line-height:1.7">
+        <strong style="color:var(--t1)">${o.name}</strong> is now live for matched customers. Cashback will apply on their next qualifying transaction.
+      </div>
+      <div style="display:inline-flex;flex-direction:column;gap:8px;background:var(--bg);border-radius:var(--r);padding:16px 24px;margin-bottom:24px;text-align:left;min-width:280px">
+        ${[
+          ['Merchant',o.name],
+          ['Cashback rate',o.rate],
+          ['Matched customers',o.match],
+          ['Budget',o.budget],
+          ['Settlement','Monthly via Lune'],
+        ].map(([k,v])=>`<div style="display:flex;justify-content:space-between;gap:24px;font-size:12px">
+          <span style="color:var(--t3)">${k}</span><span style="font-weight:600">${v}</span>
+        </div>`).join('')}
+      </div>
+      <div style="display:flex;gap:8px;justify-content:center">
+        <button class="btn btn-g" onclick="closeModal()">Close</button>
+        <button class="btn btn-p" onclick="closeModal();go('pulse-campaigns')">View Active Campaigns →</button>
+      </div>
+    </div>`;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// PULSE  ——  Merchant Portal integrated into LuneHub Analytics v1.4
+// ═══════════════════════════════════════════════════════════════════════════════
+
+const MERCHANT_OFFERS = [
+  {key:'summer-grocery', name:'Summer Grocery Cashback', status:'live',   cat:'Grocery & Supermarket', rate:'8%',  banks:4, paid:'AED 108,800', budget:'AED 160,000', expires:'Aug 31, 2025'},
+  {key:'weekend-dining', name:'Weekend Dining Boost',    status:'live',   cat:'Food & Beverage',        rate:'12%', banks:2, paid:'AED 27,500',  budget:'AED 125,000', expires:'Sep 30, 2025'},
+  {key:'bts-electronics',name:'Back to School Electronics', status:'review', cat:'Electronics & Tech',  rate:'5%',  banks:0, paid:'—',           budget:'AED 80,000',  expires:'Oct 15, 2025'},
+  {key:'spring-grocery', name:'Spring Grocery Flash',    status:'done',   cat:'Grocery & Supermarket', rate:'10%', banks:3, paid:'AED 94,200',   budget:'AED 100,000', expires:'Jun 30, 2025'},
+];
+
+const MERCHANT_COMP = [
+  {name:'Competitor A', you:false, spend:'AED 387', freq:'4.2 txn/mo', pct:26},
+  {name:'Carrefour UAE', you:true, spend:'AED 318', freq:'3.8 txn/mo', pct:21},
+  {name:'Competitor B', you:false, spend:'AED 254', freq:'3.1 txn/mo', pct:14},
+  {name:'Competitor C', you:false, spend:'AED 211', freq:'2.8 txn/mo', pct:10},
+  {name:'Competitor D', you:false, spend:'AED 174', freq:'2.4 txn/mo', pct:7},
+];
+
+function mStatusBadge(status) {
+  if (status === 'live')   return `<span class="badge bg2" style="background:var(--al);color:var(--ad)"><span style="width:5px;height:5px;border-radius:50%;background:currentColor;margin-right:3px;display:inline-block"></span>Live</span>`;
+  if (status === 'review') return `<span class="badge bo2" style="background:var(--orangel);color:#92400e">In review</span>`;
+  return `<span class="badge" style="background:var(--bl);color:var(--bl);background:#f3f4f6;color:#6b7280">Completed</span>`;
+}
+
+// ── Merchant: Dashboard ───────────────────────────────────────────────────────
+function pgPulseMerchant() {
+  const compRows = MERCHANT_COMP.map((r,i) => {
+    const barW = Math.round((r.pct / MERCHANT_COMP[0].pct) * 100);
+    const you = r.you;
+    return `<div style="display:grid;grid-template-columns:36px 1fr 160px 110px 70px;align-items:center;padding:11px 20px;border-bottom:1px solid var(--bd);transition:background .08s;${you ? 'background:var(--al);border-left:2px solid var(--ac)' : ''}">
+      <span style="font-size:12.5px;font-weight:700;color:${you ? 'var(--ad)' : 'var(--t3)'}">${i+1}</span>
+      <div>
+        <div style="font-size:12.5px;font-weight:${you ? '700' : '500'};color:${you ? 'var(--ad)' : 'var(--t1)'}">${r.name}${you ? ' <span style="font-size:9px;background:var(--ac);color:#fff;padding:1px 5px;border-radius:3px;margin-left:5px;font-weight:800">YOU</span>' : ''}</div>
+        <div style="display:flex;align-items:center;gap:6px;margin-top:4px">
+          <div style="width:80px;height:3px;background:var(--bl);border-radius:2px;overflow:hidden"><div style="width:${barW}%;height:100%;background:${you ? 'var(--ac)' : 'var(--t3)'};border-radius:2px"></div></div>
+          <span style="font-size:10px;color:var(--t3)">${r.pct}% share</span>
+        </div>
+      </div>
+      <span style="font-size:12.5px;color:var(--t2)">${r.spend}</span>
+      <span style="font-size:12.5px;color:var(--t2)">${r.freq}</span>
+      <span style="font-size:13px;font-weight:${you ? '700' : '500'};color:${you ? 'var(--ad)' : 'var(--t3)'}">${r.pct}%</span>
+    </div>`;
+  }).join('');
+
+  return `
+<div class="bc"><a onclick="go('overview')">LuneHub</a><span class="sep">›</span> <span>Pulse — Merchant</span></div>
+<div class="ph">
+  <div><h1>Good morning, Carrefour UAE</h1><p>Track your live campaigns and offer performance.</p></div>
+  <button class="btn btn-p btn-sm" onclick="go('pulse-merchant-create')">
+    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14" stroke-linecap="round"/></svg>
+    New Offer
+  </button>
+</div>
+<div class="ct">
+
+  <div class="p-g4 p-mb20">
+    <div class="p-sc"><div class="p-scl">Active Offers</div><div class="p-scv">2</div><div class="p-scs">Across 4 banks</div></div>
+    <div class="p-sc"><div class="p-scl">Budget Committed</div><div class="p-scv">AED 285K</div><div class="p-scs">This quarter</div></div>
+    <div class="p-sc" style="background:var(--al);border-color:var(--ac)"><div class="p-scl" style="color:var(--ad)">Cashback Paid</div><div class="p-scv" style="color:var(--ad)">AED 47.2K</div><div class="p-scs" style="color:var(--ad)">29.5% of budget used</div></div>
+    <div class="p-sc"><div class="p-scl">Banks Engaged</div><div class="p-scv">4</div><div class="p-scs">Out of 9 on network</div></div>
+  </div>
+
+  <div style="background:var(--bluel);border:1px solid #bfdbfe;border-radius:var(--r);padding:12px 16px;font-size:12.5px;color:var(--blue);line-height:1.6;margin-bottom:20px;display:flex;gap:10px">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;margin-top:1px"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+    You have 1 offer currently <strong>in review</strong> with Lune — you'll be contacted by email once it's approved.
+  </div>
+
+  <div class="g2 p-mb20">
+    <div class="card">
+      <div class="p-ch"><h3>Budget Utilisation</h3></div>
+      <div style="padding:18px;display:flex;flex-direction:column;gap:16px">
+        ${[
+          {name:'Summer Grocery Cashback', pct:68, paid:'AED 108,800', budget:'AED 160,000', color:'var(--ac)'},
+          {name:'Weekend Dining Boost',    pct:22, paid:'AED 27,500',  budget:'AED 125,000', color:'var(--blue)'},
+        ].map(c=>`
+          <div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:6px">
+              <span style="font-size:12px;color:var(--t2)">${c.name}</span>
+              <span style="font-size:12px;font-weight:600">${c.pct}%</span>
+            </div>
+            <div style="height:10px;background:var(--bl);border-radius:5px;overflow:hidden"><div style="height:100%;width:${c.pct}%;background:${c.color};border-radius:5px"></div></div>
+            <div style="font-size:11px;color:var(--t3);margin-top:4px">${c.paid} of ${c.budget}</div>
+          </div>`).join('')}
+      </div>
+    </div>
+    <div class="card">
+      <div class="p-ch"><h3>Daily Cashback Paid Out</h3><span style="font-size:11px;color:var(--t3)">Last 14 days</span></div>
+      <div style="padding:18px">
+        <div style="display:flex;align-items:flex-end;gap:4px;height:60px">
+          ${[2800,3100,2600,3400,3800,2900,4200,3600,3100,2800,3900,4100,3700,4400].map((v,i,a)=>{
+            const h = Math.round((v/Math.max(...a))*100);
+            const isLast = i === a.length-1;
+            return `<div style="flex:1;height:${h}%;background:${isLast ? 'var(--ac)' : 'var(--al)'};border-radius:3px 3px 0 0;min-height:4px" title="AED ${v.toLocaleString()}"></div>`;
+          }).join('')}
+        </div>
+        <div style="font-size:11px;color:var(--t3);margin-top:8px;text-align:right">AED per day</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tc p-mb20">
+    <div class="th2"><span class="tht">All Offers</span><a class="tha" onclick="go('pulse-merchant-offers')">View all →</a></div>
+    <table>
+      <thead><tr><th>Offer name</th><th>Status</th><th>Banks</th><th>Cashback paid</th><th>Budget</th><th>Expires</th></tr></thead>
+      <tbody>
+        ${MERCHANT_OFFERS.map(o=>`
+          <tr onclick="go('pulse-merchant-${o.status === 'live' ? 'live-detail' : 'detail'}','${o.key}')" style="cursor:pointer">
+            <td style="font-weight:600">${o.name}</td>
+            <td>${mStatusBadge(o.status)}</td>
+            <td style="font-size:12px;color:var(--t2)">${o.banks > 0 ? o.banks + ' banks' : '—'}</td>
+            <td style="font-family:var(--m);font-size:12px">${o.paid}</td>
+            <td style="font-family:var(--m);font-size:12px">${o.budget}</td>
+            <td style="font-size:12px;color:var(--t3)">${o.expires}</td>
+          </tr>`).join('')}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="tc">
+    <div class="th2">
+      <span class="tht">Category Benchmark — Grocery & Supermarket</span>
+      <span style="font-size:11px;color:var(--t3)">Competitors masked · Aggregated across partner banks</span>
+    </div>
+    <div style="display:grid;grid-template-columns:36px 1fr 160px 110px 70px;font-size:10.5px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.4px;padding:9px 20px;border-bottom:1px solid var(--bd)">
+      <span>#</span><span>Brand</span><span>Median txn value (30d)</span><span>Frequency</span><span>Share</span>
+    </div>
+    ${compRows}
+    <div style="padding:10px 20px;font-size:11px;color:var(--t3);border-top:1px solid var(--bd)">
+      Customer counts aggregated across all Lune partner banks. Competitor names are permanently anonymised.
+    </div>
+  </div>
+
+</div>`;
+}
+
+// ── Merchant: My Offers ───────────────────────────────────────────────────────
+function pgPulseMerchantOffers() {
+  return `
+<div class="bc"><a onclick="go('pulse-merchant')">Pulse — Merchant</a><span class="sep">›</span> <span>My Offers</span></div>
+<div class="ph">
+  <div><h1>My Offers</h1><p>All submitted and active cashback offers.</p></div>
+  <button class="btn btn-p btn-sm" onclick="go('pulse-merchant-create')">
+    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14" stroke-linecap="round"/></svg>
+    New Offer
+  </button>
+</div>
+<div class="ct">
+  <div class="tc">
+    <table>
+      <thead><tr><th>Offer name</th><th>Status</th><th>Category</th><th>Rate</th><th>Banks</th><th>Cashback paid</th><th>Budget</th><th>Expires</th></tr></thead>
+      <tbody>
+        ${MERCHANT_OFFERS.map(o=>`
+          <tr onclick="go('pulse-merchant-${o.status === 'live' ? 'live-detail' : 'detail'}','${o.key}')" style="cursor:pointer">
+            <td style="font-weight:600;${o.status === 'done' ? 'color:var(--t3)' : ''}">${o.name}</td>
+            <td>${mStatusBadge(o.status)}</td>
+            <td style="font-size:12px;color:var(--t2)">${o.cat}</td>
+            <td style="font-size:13px;font-weight:700;color:var(--ac);font-family:var(--f)">${o.rate}</td>
+            <td style="font-size:12px;color:var(--t2)">${o.banks > 0 ? o.banks + ' banks' : '—'}</td>
+            <td style="font-family:var(--m);font-size:12px">${o.paid}</td>
+            <td style="font-family:var(--m);font-size:12px">${o.budget}</td>
+            <td style="font-size:12px;color:var(--t3)">${o.expires}</td>
+          </tr>`).join('')}
+      </tbody>
+    </table>
+  </div>
+</div>`;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// PULSE  ——  Merchant Portal Phase 2: New Offer, Live Detail, In-Review Detail
+// ═══════════════════════════════════════════════════════════════════════════════
+
+const M_CATS = [
+  {key:'groceries',     label:'Groceries',             icon:'🛒', subs:['Supermarket','Convenience Store','Grocery Delivery','Other']},
+  {key:'dining',        label:'Dining',                icon:'🍽', subs:['Restaurants','Food Delivery','Coffeeshop','Nightlife','Other']},
+  {key:'shopping',      label:'Shopping',              icon:'🛍', subs:['Department Stores','Clothing','Electronics','Online Shopping','Furniture','Cosmetics & Perfumes','Other']},
+  {key:'wellness',      label:'Wellness',              icon:'💊', subs:['Medical','Pharmacy','Gym','Hair & Beauty','Dental','Other']},
+  {key:'transportation',label:'Transportation',        icon:'🚗', subs:['Fuel & E-charging','Parking','Taxis','Car Rental','Other']},
+  {key:'travel',        label:'Travel',                icon:'✈️', subs:['Hotel & Accommodation','Plane & Train Tickets','Other']},
+  {key:'entertainment', label:'Entertainment',         icon:'🎬', subs:['Cinema','Gaming','Sport Events','Streaming','Other']},
+  {key:'household',     label:'Household',             icon:'🏠', subs:['Rent','Electricity & Water','Internet','Maintenance','Other']},
+];
+
+let mSelSubs = {};
+M_CATS.forEach(c => { mSelSubs[c.key] = new Set(); });
+
+// ── Merchant: accordion helpers ──────────────────────────────────────────────
+function mToggleCat(key) {
+  const subs = document.getElementById('mcatsubs-' + key);
+  const chev = document.getElementById('mcatchev-' + key);
+  const hdr  = document.getElementById('mcathdr-' + key);
+  const open = subs.style.display === 'block';
+  // close all
+  M_CATS.forEach(c => {
+    const s = document.getElementById('mcatsubs-' + c.key);
+    const cv = document.getElementById('mcatchev-' + c.key);
+    const h = document.getElementById('mcathdr-' + c.key);
+    if (s) s.style.display = 'none';
+    if (cv) cv.style.transform = '';
+    if (h) h.style.background = '';
+  });
+  if (!open) {
+    subs.style.display = 'block';
+    if (chev) chev.style.transform = 'rotate(90deg)';
+    if (hdr) hdr.style.background = 'var(--bg)';
+  }
+}
+
+function mToggleSub(key, sub, el) {
+  const set = mSelSubs[key];
+  const chkEl = el.querySelector('[id^="msubchk"]');
+  if (set.has(sub)) {
+    set.delete(sub);
+    el.style.background = '';
+    if (chkEl) { chkEl.style.background = ''; chkEl.style.borderColor = 'var(--bd)'; chkEl.innerHTML = ''; }
+  } else {
+    set.add(sub);
+    el.style.background = 'var(--sf)';
+    if (chkEl) { chkEl.style.background = 'var(--ac)'; chkEl.style.borderColor = 'var(--ac)'; chkEl.innerHTML = '<svg width="9" height="9" fill="none" stroke="#fff" stroke-width="2.5" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5" stroke-linecap="round" stroke-linejoin="round"/></svg>'; }
+  }
+  const cnt = set.size;
+  const cntEl = document.getElementById('mcatcnt-' + key);
+  if (cntEl) { cntEl.textContent = cnt; cntEl.style.display = cnt > 0 ? 'inline-block' : 'none'; }
+  mRenderStrip();
+}
+
+function mRemoveSub(key, sub) {
+  mSelSubs[key].delete(sub);
+  const safeId = sub.replace(/[^a-z0-9]/gi, '_');
+  const rowEl = document.getElementById('msubrow-' + key + '-' + safeId);
+  const chkEl = document.getElementById('msubchk-' + key + '-' + safeId);
+  if (rowEl) rowEl.style.background = '';
+  if (chkEl) { chkEl.style.background = ''; chkEl.style.borderColor = 'var(--bd)'; chkEl.innerHTML = ''; }
+  const cnt = mSelSubs[key].size;
+  const cntEl = document.getElementById('mcatcnt-' + key);
+  if (cntEl) { cntEl.textContent = cnt; cntEl.style.display = cnt > 0 ? 'inline-block' : 'none'; }
+  mRenderStrip();
+}
+
+function mRenderStrip() {
+  const wrap = document.getElementById('m-and-strip');
+  const tags = document.getElementById('m-and-tags');
+  if (!wrap || !tags) return;
+  const items = [];
+  M_CATS.forEach(c => {
+    if (mSelSubs[c.key].size) {
+      items.push({type:'cat', label: c.label});
+      [...mSelSubs[c.key]].forEach(s => items.push({type:'sub', key: c.key, label: s}));
+    }
+  });
+  [...mSelBrands].forEach(name => {
+    const b = M_BRANDS.find(x => x.name === name);
+    items.push({type:'brand', label: name, b});
+  });
+  if (!items.length) { wrap.style.display = 'none'; return; }
+  wrap.style.display = 'block';
+  let html = '';
+  items.forEach((t, i) => {
+    if (i > 0) html += '<span style="font-size:9.5px;font-weight:800;letter-spacing:.5px;color:rgba(255,255,255,.2);padding:0 2px;text-transform:uppercase">AND</span>';
+    if (t.type === 'cat') {
+      html += `<span style="display:inline-flex;align-items:center;padding:5px 10px;border-radius:20px;font-size:11px;font-weight:500;background:rgba(255,255,255,.1);color:rgba(255,255,255,.5)">${t.label}</span>`;
+    } else if (t.type === 'sub') {
+      html += `<span style="display:inline-flex;align-items:center;gap:5px;padding:5px 10px;border-radius:20px;font-size:12px;font-weight:500;background:rgba(0,196,140,.2);color:var(--ac)">${t.label}<button onclick="mRemoveSub('${t.key}','${t.label.replace(/'/g,"\\'")}')" style="cursor:pointer;opacity:.5;font-size:13px;line-height:1;background:none;border:none;color:inherit;padding:0;margin-left:1px">×</button></span>`;
+    } else {
+      const b = t.b;
+      const ico = b ? `<span style="width:16px;height:16px;border-radius:3px;background:${b.bg};color:${b.tc};font-size:8px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;margin-right:4px">${b.ic}</span>` : '';
+      html += `<span style="display:inline-flex;align-items:center;padding:5px 10px;border-radius:20px;font-size:12px;font-weight:500;background:#1e3a5f;color:#93c5fd">${ico}${t.label}<button onclick="mRemoveBrand('${t.label.replace(/'/g,"\\'")}')" style="cursor:pointer;opacity:.5;font-size:13px;line-height:1;background:none;border:none;color:inherit;padding:0;margin-left:5px">×</button></span>`;
+    }
+  });
+  tags.innerHTML = html;
+}
+
+// ── Merchant: brand search helpers ───────────────────────────────────────────
+const M_BRANDS = [
+  {ic:'SP',bg:'#e8f5ee',tc:'#003D1F',name:'Spinneys',          cat:'Groceries'},
+  {ic:'LU',bg:'#fff0f0',tc:'#991b1b',name:'Lulu Hypermarket',   cat:'Groceries'},
+  {ic:'UC',bg:'#fffbeb',tc:'#92400e',name:'Union Coop',         cat:'Groceries'},
+  {ic:'CH',bg:'#e8f5ee',tc:'#166534',name:'Choithrams',         cat:'Groceries'},
+  {ic:'SB',bg:'#e8f5ee',tc:'#003D1F',name:'Starbucks UAE',      cat:'Dining'},
+  {ic:'MD',bg:'#fff0f0',tc:'#991b1b',name:"McDonald's UAE",     cat:'Dining'},
+  {ic:'TL',bg:'#f0f0ff',tc:'#3730a3',name:'Talabat',            cat:'Dining'},
+  {ic:'ZR',bg:'#1a1a1a',tc:'#fff',   name:'Zara UAE',           cat:'Shopping'},
+  {ic:'HM',bg:'#e8f0ff',tc:'#1a3e99',name:'H&M UAE',            cat:'Shopping'},
+  {ic:'NK',bg:'#1a1a1a',tc:'#fff',   name:'Nike UAE',           cat:'Shopping'},
+  {ic:'AD',bg:'#1a1a1a',tc:'#fff',   name:'Adidas UAE',         cat:'Shopping'},
+  {ic:'AP',bg:'#e8f0ff',tc:'#1a3e99',name:'Apple UAE',          cat:'Shopping'},
+  {ic:'SE',bg:'#1a1a1a',tc:'#fff',   name:'Sephora UAE',        cat:'Shopping'},
+  {ic:'LF',bg:'#e8f5ee',tc:'#003D1F',name:'Life Pharmacy',      cat:'Wellness'},
+  {ic:'FF',bg:'#e8f0ff',tc:'#1a3e99',name:'Fitness First',      cat:'Wellness'},
+  {ic:'EN',bg:'#e8f5ee',tc:'#003D1F',name:'ENOC',               cat:'Transportation'},
+  {ic:'AN',bg:'#e8f0ff',tc:'#1a3e99',name:'ADNOC Plus',         cat:'Transportation'},
+  {ic:'EK',bg:'#e8f0ff',tc:'#1a3e99',name:'Emirates',           cat:'Travel'},
+  {ic:'ET',bg:'#e8f5ee',tc:'#003D1F',name:'Etihad Airways',     cat:'Travel'},
+  {ic:'VO',bg:'#f5f3ff',tc:'#6d28d9',name:'VOX Cinemas',        cat:'Entertainment'},
+];
+const mSelBrands = new Set();
+
+function mBrandInput(q) {
+  const drop = document.getElementById('m-brand-drop');
+  const clr  = document.getElementById('m-brand-clear');
+  const box  = document.getElementById('m-brand-box');
+  if (!drop) return;
+  if (clr) clr.style.display = q ? 'block' : 'none';
+  const val = q.trim().toLowerCase();
+  const filtered = val ? M_BRANDS.filter(b => b.name.toLowerCase().includes(val) || b.cat.toLowerCase().includes(val)) : M_BRANDS;
+  if (!filtered.length) { drop.innerHTML = '<div style="padding:16px;text-align:center;font-size:12px;color:var(--t3)">No brands found</div>'; drop.style.display = 'block'; return; }
+  const byCat = {};
+  filtered.forEach(b => { if (!byCat[b.cat]) byCat[b.cat] = []; byCat[b.cat].push(b); });
+  let html = '';
+  Object.entries(byCat).forEach(([cat, brands]) => {
+    html += `<div style="font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--t3);padding:9px 13px 5px;background:var(--bg);position:sticky;top:0">${cat}</div>`;
+    brands.forEach(b => {
+      const sel = mSelBrands.has(b.name);
+      html += `<div onclick="mAddBrand('${b.name.replace(/'/g,"\\'")}','${b.ic}','${b.bg}','${b.tc}')" style="display:flex;align-items:center;gap:10px;padding:8px 13px;cursor:pointer;transition:background .1s;border-top:1px solid var(--bd);${sel?'opacity:.4;pointer-events:none':''}" onmouseenter="this.style.background='var(--bg)'" onmouseleave="this.style.background=''">
+        <div style="width:28px;height:28px;border-radius:6px;background:${b.bg};color:${b.tc};display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0">${b.ic}</div>
+        <div style="flex:1"><div style="font-size:12.5px;font-weight:500">${b.name}</div><div style="font-size:10.5px;color:var(--t3)">${b.cat}</div></div>
+        <span style="font-size:11px;font-weight:600;color:${sel?'var(--ac)':'var(--blue)'};background:${sel?'var(--al)':'var(--bluel)'};padding:3px 9px;border-radius:4px">${sel?'✓ Added':'+ Add'}</span>
+      </div>`;
+    });
+  });
+  drop.innerHTML = html;
+  drop.style.display = 'block';
+}
+
+function mAddBrand(name, ic, bg, tc) {
+  if (mSelBrands.has(name)) return;
+  mSelBrands.add(name);
+  mCloseBrand();
+  const inp = document.getElementById('m-brand-input');
+  if (inp) inp.value = '';
+  const clr = document.getElementById('m-brand-clear');
+  if (clr) clr.style.display = 'none';
+  mRenderStrip();
+}
+
+function mRemoveBrand(name) {
+  mSelBrands.delete(name);
+  mRenderStrip();
+}
+
+function mCloseBrand() {
+  const d = document.getElementById('m-brand-drop');
+  if (d) d.style.display = 'none';
+}
+
+function mClearBrand() {
+  const inp = document.getElementById('m-brand-input');
+  if (inp) inp.value = '';
+  const clr = document.getElementById('m-brand-clear');
+  if (clr) clr.style.display = 'none';
+  mCloseBrand();
+}
+
+document.addEventListener('click', e => {
+  const wrap = document.getElementById('m-brand-wrap');
+  if (wrap && !wrap.contains(e.target)) mCloseBrand();
+});
+
+function mUpdFees() {
+  const b = parseInt(document.getElementById('m-budget')?.value) || 0;
+  const fee = Math.round(b * .10), n = b - fee;
+  const fmt = v => 'AED ' + v.toLocaleString();
+  const s = id => document.getElementById(id);
+  if (s('m-fee-total')) s('m-fee-total').textContent = fmt(b);
+  if (s('m-fee-combined')) s('m-fee-combined').textContent = '− ' + fmt(fee);
+  if (s('m-fee-net'))   s('m-fee-net').textContent   = fmt(n);
+}
+
+// ── Merchant: New Offer ───────────────────────────────────────────────────────
+function pgPulseMerchantCreate() {
+  M_CATS.forEach(c => { mSelSubs[c.key] = new Set(); });
+
+  const accordionHTML = M_CATS.map(c => `
+    <div id="mcatrow-${c.key}" style="border-bottom:1px solid var(--bd)">
+      <div id="mcathdr-${c.key}" onclick="mToggleCat('${c.key}')" style="display:flex;align-items:center;gap:10px;padding:10px 14px;cursor:pointer;transition:background .1s">
+        <span style="font-size:16px;width:22px;text-align:center">${c.icon}</span>
+        <span style="flex:1;font-size:12.5px;font-weight:500">${c.label}</span>
+        <span id="mcatcnt-${c.key}" style="display:none;font-size:10px;font-weight:700;color:var(--ad);background:var(--al);padding:2px 7px;border-radius:10px">0</span>
+        <svg id="mcatchev-${c.key}" width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color:var(--t3);transition:transform .2s"><path d="M9 18l6-6-6-6" stroke-width="2.2" stroke-linecap="round"/></svg>
+      </div>
+      <div id="mcatsubs-${c.key}" style="display:none;background:var(--bg);padding:6px 12px 10px 44px;border-top:1px solid var(--bd)">
+        ${c.subs.map(s => `
+          <div id="msubrow-${c.key}-${s.replace(/[^a-z0-9]/gi,'_')}" onclick="mToggleSub('${c.key}','${s.replace(/'/g,"\\'")}',this)" style="display:flex;align-items:center;gap:9px;padding:6px 8px;border-radius:5px;cursor:pointer;transition:background .1s">
+            <div id="msubchk-${c.key}-${s.replace(/[^a-z0-9]/gi,'_')}" style="width:15px;height:15px;border-radius:3px;border:1.5px solid var(--bd);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .1s"></div>
+            <span style="font-size:12px;color:var(--t2)">${s}</span>
+          </div>`).join('')}
+      </div>
+    </div>`).join('');
+
+  return `
+<div class="bc"><a onclick="go('pulse-merchant')">Pulse — Merchant</a><span class="sep">›</span> <span>New Offer</span></div>
+<div class="ph"><div><h1>New Offer</h1><p>Submit a cashback offer to Lune for review.</p></div></div>
+<div class="ct">
+
+  <div class="card p-mb16">
+    <div class="p-ch"><h3>Customer targeting &amp; audience</h3><span style="font-size:11px;font-weight:600;color:var(--t3);background:var(--bg);border:1px solid var(--bd);border-radius:4px;padding:2px 8px">Required</span></div>
+    <div style="padding:18px">
+      <p style="font-size:12px;color:var(--t3);margin-bottom:16px">Select categories and subcategories, then optionally narrow by brand. Audience filters apply on top of your targeting selection.</p>
+
+      <div style="font-size:12px;font-weight:600;color:var(--t2);margin-bottom:8px">Categories &amp; subcategories</div>
+      <div style="border:1px solid var(--bd);border-radius:var(--r);overflow:hidden;margin-bottom:16px">
+        ${accordionHTML}
+      </div>
+
+      <div style="font-size:12px;font-weight:600;color:var(--t2);margin-bottom:8px">Brand targeting <span style="font-weight:400;color:var(--t3)">— optional</span></div>
+      <div style="position:relative;margin-bottom:16px" id="m-brand-wrap">
+        <div style="display:flex;align-items:center;gap:8px;border:1px solid var(--bd);border-radius:var(--rs);padding:8px 12px;background:var(--sf);transition:border-color .15s" id="m-brand-box">
+          <svg width="13" height="13" fill="none" stroke="var(--t3)" viewBox="0 0 24 24" style="flex-shrink:0"><circle cx="11" cy="11" r="8" stroke-width="2.2"/><path d="M21 21l-4.35-4.35" stroke-width="2.2" stroke-linecap="round"/></svg>
+          <input id="m-brand-input" class="" placeholder="Search brands — e.g. Starbucks, Zara, ADNOC…" autocomplete="off" style="flex:1;border:none;background:none;font-size:12.5px;font-family:var(--f);color:var(--t1);outline:none"
+            oninput="mBrandInput(this.value)" onfocus="mBrandInput(this.value)" onblur="setTimeout(mCloseBrand,180)">
+          <button id="m-brand-clear" onclick="mClearBrand()" style="display:none;background:none;border:none;cursor:pointer;font-size:17px;line-height:1;color:var(--t3);padding:0">×</button>
+        </div>
+        <div id="m-brand-drop" style="display:none;position:absolute;top:calc(100% + 5px);left:0;right:0;background:var(--sf);border:1px solid var(--bd);border-radius:var(--rs);box-shadow:0 8px 28px rgba(0,0,0,.1);z-index:100;max-height:240px;overflow-y:auto"></div>
+      </div>
+
+      <div id="m-and-strip" style="display:none;background:var(--t1);border-radius:var(--r);padding:12px 14px;margin-bottom:20px">
+        <div style="font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:rgba(255,255,255,.3);margin-bottom:9px">Targeting — all conditions combined with AND</div>
+        <div id="m-and-tags" style="display:flex;flex-wrap:wrap;align-items:center;gap:6px"></div>
+      </div>
+
+      <div style="height:1px;background:var(--bd);margin-bottom:18px"></div>
+
+      <div style="font-size:12px;font-weight:600;color:var(--t2);margin-bottom:12px">Audience filters</div>
+      <div class="g2" style="margin-bottom:14px">
+        <div>
+          <label style="display:block;font-size:12px;font-weight:600;color:var(--t2);margin-bottom:5px">Min monthly spend (AED)</label>
+          <input type="number" value="200" class="fi" style="width:100%">
+        </div>
+        <div>
+          <label style="display:block;font-size:12px;font-weight:600;color:var(--t2);margin-bottom:5px">Max monthly spend (AED)</label>
+          <input type="number" placeholder="No cap" class="fi" style="width:100%">
+        </div>
+      </div>
+      <div class="g2">
+        <div>
+          <label style="display:block;font-size:12px;font-weight:600;color:var(--t2);margin-bottom:5px">Min transactions / month</label>
+          <input type="number" value="2" class="fi" style="width:100%">
+        </div>
+        <div>
+          <label style="display:block;font-size:12px;font-weight:600;color:var(--t2);margin-bottom:5px">Look-back period</label>
+          <select class="fi" style="width:100%;cursor:pointer">
+            <option>Last 30 days</option>
+            <option selected>Last 60 days</option>
+            <option>Last 90 days</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card p-mb16">
+    <div class="p-ch"><h3>Offer details</h3></div>
+    <div style="padding:18px">
+      <div style="margin-bottom:16px">
+        <label style="display:block;font-size:12px;font-weight:600;color:var(--t2);margin-bottom:5px">Offer name</label>
+        <input class="fi lg" style="width:100%" value="Summer Grocery Cashback">
+      </div>
+      <div class="g2" style="margin-bottom:16px">
+        <div>
+          <label style="display:block;font-size:12px;font-weight:600;color:var(--t2);margin-bottom:5px">Cashback rate</label>
+          <div style="position:relative">
+            <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:12px;font-weight:600;color:var(--t3);pointer-events:none">%</span>
+            <input id="m-rate" type="number" value="8" min="1" max="30" class="fi" style="width:100%;padding-left:30px">
+          </div>
+        </div>
+        <div>
+          <label style="display:block;font-size:12px;font-weight:600;color:var(--t2);margin-bottom:5px">Total campaign budget</label>
+          <div style="position:relative">
+            <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:12px;font-weight:600;color:var(--t3);pointer-events:none">AED</span>
+            <input id="m-budget" type="number" value="100000" class="fi" style="width:100%;padding-left:42px" oninput="mUpdFees()">
+          </div>
+        </div>
+      </div>
+      <div class="g2" style="margin-bottom:16px">
+        <div>
+          <label style="display:block;font-size:12px;font-weight:600;color:var(--t2);margin-bottom:5px">Start date</label>
+          <input type="date" value="2025-07-01" class="fi" style="width:100%">
+        </div>
+        <div>
+          <label style="display:block;font-size:12px;font-weight:600;color:var(--t2);margin-bottom:5px">End date</label>
+          <input type="date" value="2025-08-31" class="fi" style="width:100%">
+        </div>
+      </div>
+      <div style="background:var(--al);border:1px solid #a7f3d0;border-radius:var(--rs);padding:14px 16px">
+        <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:12px;border-bottom:1px dashed #a7f3d0"><span style="color:var(--t2)">Total budget</span><span id="m-fee-total" style="font-weight:600">AED 100,000</span></div>
+        <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:12px;border-bottom:1px dashed #a7f3d0">
+          <span style="color:var(--t2)">Lune &amp; bank fees (10%)
+            <span style="font-size:10px;color:var(--t3);margin-left:6px">5% Lune platform · 5% bank distribution</span>
+          </span>
+          <span id="m-fee-combined" style="font-weight:600">− AED 10,000</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:12px"><span style="color:var(--t2)">Net cashback pool</span><span id="m-fee-net" style="font-weight:700;color:var(--ad)">AED 90,000</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card p-mb16">
+    <div class="p-ch"><h3>Creative assets</h3></div>
+    <div style="padding:18px">
+      <div style="margin-bottom:16px">
+        <label style="display:block;font-size:12px;font-weight:600;color:var(--t2);margin-bottom:5px">Offer headline</label>
+        <input class="fi" style="width:100%" value="Earn 8% cashback on every Carrefour shop">
+      </div>
+      <div style="margin-bottom:16px">
+        <label style="display:block;font-size:12px;font-weight:600;color:var(--t2);margin-bottom:5px">Description</label>
+        <textarea class="fi" rows="2" style="resize:none;width:100%">Min spend AED 200 per transaction. Valid on grocery and household purchases.</textarea>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px">
+        ${[
+          {label:'Brand logo',        hint:'Square · min 200×200px',  desc:'Shown next to your brand name on all bank portals.'},
+          {label:'Bank portal banner',hint:'1200×400px recommended',  desc:'Displayed on the bank LuneHub offer card — 3:1 ratio.'},
+          {label:'Mobile promo image',hint:'800×800px recommended',   desc:'Shown in the bank mobile app cashback offer feed.'},
+        ].map(u=>`
+          <div>
+            <label style="display:block;font-size:12px;font-weight:600;color:var(--t2);margin-bottom:5px">${u.label} <span style="font-weight:400;color:var(--t3)">— PNG or JPG</span></label>
+            <div style="border:1.5px dashed var(--bd);border-radius:var(--r);padding:18px 12px;text-align:center;background:var(--bg);min-height:110px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:7px;cursor:pointer;transition:border-color .15s" onmouseenter="this.style.borderColor='var(--ac)'" onmouseleave="this.style.borderColor='var(--bd)'">
+              <svg width="20" height="20" fill="none" stroke="var(--t3)" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3" stroke-width="1.6"/><circle cx="8.5" cy="8.5" r="1.5" stroke-width="1.6"/><path d="M21 15l-5-5L5 21" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <p style="font-size:11px;color:var(--t3);margin:0">${u.hint}</p>
+              <span style="font-size:11.5px;font-weight:600;color:var(--ac);border:1px solid var(--ac);border-radius:4px;padding:3px 10px">Choose file</span>
+            </div>
+            <p style="font-size:11px;color:var(--t3);margin-top:5px;line-height:1.5">${u.desc}</p>
+          </div>`).join('')}
+      </div>
+    </div>
+  </div>
+
+  <div class="card p-mb16">
+    <div class="p-ch"><h3>Review &amp; submit</h3></div>
+    <div style="padding:18px">
+      <div style="background:var(--al);border:1px solid #a7f3d0;border-radius:var(--rs);padding:12px 14px;display:flex;gap:10px;font-size:12px;color:var(--ad);margin-bottom:16px">
+        <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="flex-shrink:0;margin-top:1px"><circle cx="12" cy="12" r="10" stroke-width="1.8"/><path d="M12 8v4M12 16h.01" stroke-width="2" stroke-linecap="round"/></svg>
+        Lune reviews your offer before it appears on the Pulse Marketplace. Partner banks independently choose to activate it. You will hear back within 2 business days.
+      </div>
+      <div style="background:var(--bg);border-radius:var(--rs);padding:14px 16px;display:grid;grid-template-columns:140px 1fr;row-gap:8px;font-size:12px;margin-bottom:16px">
+        <span style="color:var(--t3)">Category targeting</span><span style="font-weight:500;text-align:right;color:var(--t3)" id="m-rs-cats">None selected</span>
+        <span style="color:var(--t3)">Cashback rate</span><span style="font-weight:500;text-align:right">8%</span>
+        <span style="color:var(--t3)">Net cashback pool</span><span style="font-weight:700;text-align:right;color:var(--ad)" id="m-rs-pool">AED 90,000</span>
+      </div>
+      <div style="display:flex;justify-content:flex-end;gap:8px">
+        <button class="btn btn-g btn-sm" onclick="go('pulse-merchant-offers')">Cancel</button>
+        <button class="btn btn-p btn-sm" onclick="go('pulse-merchant')">Submit to Lune →</button>
+      </div>
+    </div>
+  </div>
+
+</div>`;
+}
+
+// ── Merchant: Live Offer Analytics ───────────────────────────────────────────
+const M_LIVE_DATA = {
+  'summer-grocery': {
+    name:'Summer Grocery Cashback', sub:'Live · 4 banks · Jul 1 – Aug 31, 2025',
+    kpis:[{l:'Total Budget',v:'AED 160K',s:'Committed'},{l:'Cashback Paid',v:'AED 108.8K',s:'68% of budget',hi:true},{l:'Budget Used',v:'68%',s:'47 days remaining'},{l:'Qualifying Transactions',v:'740',s:'Across all banks'}],
+    burnPct:68, burnLabel:'AED 108,800 of AED 160,000',
+    bars:[2800,3100,2600,3400,3800,2900,4200,3600,3100,2800,3900,4100,3700,4400],
+    weeks:[{l:'Wk 1',v:'22.4K'},{l:'Wk 2',v:'28.1K'},{l:'Wk 3',v:'31.6K'},{l:'Wk 4',v:'26.7K',cur:true}],
+    details:[['Merchant','Carrefour UAE'],['Category','Groceries'],['Cashback rate','8%'],['Campaign period','Jul 1 – Aug 31, 2025'],['Min transaction','AED 200'],['Cashback cap','AED 500 / customer / mo'],['Budget remaining','AED 51,200']],
+    txns:[
+      {ref:'TXN-4821',date:'Aug 14',amount:'AED 480',  cb:'AED 38.40',bank:'Bank A',status:'Paid'},
+      {ref:'TXN-4820',date:'Aug 14',amount:'AED 322',  cb:'AED 25.76',bank:'Bank B',status:'Paid'},
+      {ref:'TXN-4819',date:'Aug 13',amount:'AED 815',  cb:'AED 65.20',bank:'Bank A',status:'Paid'},
+      {ref:'TXN-4818',date:'Aug 13',amount:'AED 214',  cb:'AED 17.12',bank:'Bank C',status:'Paid'},
+      {ref:'TXN-4817',date:'Aug 12',amount:'AED 1,240',cb:'AED 99.20',bank:'Bank D',status:'Paid'},
+      {ref:'TXN-4816',date:'Aug 12',amount:'AED 378',  cb:'AED 30.24',bank:'Bank B',status:'Paid'},
+      {ref:'TXN-4815',date:'Aug 11',amount:'AED 592',  cb:'AED 47.36',bank:'Bank A',status:'Paid'},
+      {ref:'TXN-4814',date:'Aug 11',amount:'AED 267',  cb:'AED 21.36',bank:'Bank C',status:'Pending'},
+    ],
+  },
+  'weekend-dining': {
+    name:'Weekend Dining Boost', sub:'Live · 2 banks · Jul 15 – Sep 30, 2025',
+    kpis:[{l:'Total Budget',v:'AED 125K',s:'Committed'},{l:'Cashback Paid',v:'AED 27.5K',s:'22% of budget',hi:true},{l:'Budget Used',v:'22%',s:'61 days remaining'},{l:'Qualifying Transactions',v:'318',s:'Across all banks'}],
+    burnPct:22, burnLabel:'AED 27,500 of AED 125,000',
+    bars:[800,1100,950,1400,1600,1200,1800,1500,1300,900,1700,1900,1600,2100],
+    weeks:[{l:'Wk 1',v:'6.2K'},{l:'Wk 2',v:'8.4K'},{l:'Wk 3',v:'7.1K'},{l:'Wk 4',v:'5.8K',cur:true}],
+    details:[['Merchant','Carrefour UAE'],['Category','Food & Beverage'],['Cashback rate','12%'],['Campaign period','Jul 15 – Sep 30, 2025'],['Min transaction','AED 100'],['Cashback cap','AED 300 / customer / mo'],['Budget remaining','AED 97,500']],
+    txns:[
+      {ref:'TXN-7201',date:'Aug 14',amount:'AED 180',cb:'AED 21.60',bank:'Bank A',status:'Paid'},
+      {ref:'TXN-7200',date:'Aug 13',amount:'AED 245',cb:'AED 29.40',bank:'Bank B',status:'Paid'},
+      {ref:'TXN-7198',date:'Aug 12',amount:'AED 310',cb:'AED 37.20',bank:'Bank A',status:'Paid'},
+      {ref:'TXN-7195',date:'Aug 11',amount:'AED 128',cb:'AED 15.36',bank:'Bank B',status:'Pending'},
+    ],
+  },
+};
+
+function pgPulseMerchantLiveDetail(key) {
+  const d = M_LIVE_DATA[key] || M_LIVE_DATA['summer-grocery'];
+  const maxBar = Math.max(...d.bars);
+  const barsHTML = d.bars.map((v,i,a) => {
+    const h = Math.round((v/maxBar)*100);
+    const isLast = i === a.length-1;
+    return `<div style="flex:1;height:${h}%;background:${isLast?'var(--ac)':'var(--al)'};border-radius:3px 3px 0 0;min-height:4px" title="AED ${v.toLocaleString()}"></div>`;
+  }).join('');
+
+  return `
+<div class="bc"><a onclick="go('pulse-merchant-offers')">My Offers</a><span class="sep">›</span> <span>${d.name}</span></div>
+<div class="ph">
+  <div>
+    <div style="font-size:12px;color:var(--t3);margin-bottom:4px;cursor:pointer" onclick="go('pulse-merchant-offers')">← My Offers</div>
+    <h1>${d.name}</h1><p>${d.sub}</p>
+  </div>
+  <span class="badge bg2" style="background:var(--al);color:var(--ad);font-size:12px;padding:5px 12px"><span style="width:5px;height:5px;border-radius:50%;background:currentColor;margin-right:4px;display:inline-block"></span>Live</span>
+</div>
+<div class="ct">
+
+  <div style="background:var(--bluel);border:1px solid #bfdbfe;border-radius:var(--r);padding:12px 16px;font-size:12.5px;color:var(--blue);line-height:1.6;margin-bottom:20px;display:flex;gap:10px">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;margin-top:1px"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+    Campaign analytics are provided by Lune from aggregated, anonymised transaction data. No individual customer data is shared — all figures represent cohort-level aggregates.
+  </div>
+
+  <div class="p-g4 p-mb20">
+    ${d.kpis.map(k=>`
+      <div class="p-sc" ${k.hi?'style="background:var(--al);border-color:var(--ac)"':''}>
+        <div class="p-scl" ${k.hi?'style="color:var(--ad)"':''}>${k.l}</div>
+        <div class="p-scv" ${k.hi?'style="color:var(--ad)"':''}>${k.v}</div>
+        <div class="p-scs" ${k.hi?'style="color:var(--ad)"':''}>${k.s}</div>
+      </div>`).join('')}
+  </div>
+
+  <div class="g2 p-mb20">
+    <div class="card">
+      <div class="p-ch"><h3>Budget Burn</h3><span style="font-size:11px;color:var(--t3)">${d.burnLabel}</span></div>
+      <div style="padding:18px">
+        <div style="height:14px;background:var(--bl);border-radius:7px;overflow:hidden;margin-bottom:16px"><div style="height:100%;width:${d.burnPct}%;background:var(--ac);border-radius:7px"></div></div>
+        <div style="font-size:12px;font-weight:600;color:var(--t2);margin-bottom:8px">Daily cashback (last 14 days)</div>
+        <div style="display:flex;align-items:flex-end;gap:4px;height:60px">${barsHTML}</div>
+        <div style="font-size:11px;color:var(--t3);margin-top:8px;text-align:right">AED per day</div>
+        <div style="font-size:12px;font-weight:600;color:var(--t2);margin:14px 0 8px">Weekly breakdown</div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px">
+          ${d.weeks.map(w=>`
+            <div style="background:${w.cur?'var(--al)':'var(--bg)'};border-radius:var(--rs);padding:12px">
+              <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.4px;color:${w.cur?'var(--ad)':'var(--t3)'};margin-bottom:6px">${w.l}</div>
+              <div style="font-size:15px;font-weight:700;color:${w.cur?'var(--ad)':'var(--t1)'}">${w.v}</div>
+              <div style="font-size:11px;color:${w.cur?'var(--ad)':'var(--t3)'}">${w.cur?'Current':'AED'}</div>
+            </div>`).join('')}
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="p-ch"><h3>Offer Details</h3></div>
+      <div style="padding:0 16px">
+        ${d.details.map(([k,v])=>`
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--bl)">
+            <span style="font-size:12px;color:var(--t3)">${k}</span>
+            <span style="font-size:12.5px;font-weight:500">${v}</span>
+          </div>`).join('')}
+      </div>
+    </div>
+  </div>
+
+  <div class="tc">
+    <div class="th2"><span class="tht">Transaction Log</span><span style="font-size:11px;color:var(--t3)">Anonymised · ${d.txns.length} of ${d.kpis[3]?.v||'—'} shown</span></div>
+    <table>
+      <thead><tr><th>Ref</th><th>Date</th><th>Amount</th><th>Cashback</th><th>Bank</th><th>Status</th></tr></thead>
+      <tbody>
+        ${d.txns.map(t=>{
+          const paid = t.status === 'Paid';
+          return `<tr>
+            <td style="font-family:var(--m);font-size:12px">${t.ref}</td>
+            <td style="color:var(--t3);font-size:12px">${t.date}</td>
+            <td>${t.amount}</td>
+            <td style="color:var(--ac);font-weight:600">${t.cb}</td>
+            <td style="font-size:12px;color:var(--t2)">${t.bank}</td>
+            <td><span class="badge" style="background:${paid?'var(--al)':'var(--orangel)'};color:${paid?'var(--ad)':'#92400e'}">${t.status}</span></td>
+          </tr>`;
+        }).join('')}
+      </tbody>
+    </table>
+  </div>
+
+</div>`;
+}
+
+// ── Merchant: In-Review Offer Detail ─────────────────────────────────────────
+function pgPulseMerchantDetail(key) {
+  return `
+<div class="bc"><a onclick="go('pulse-merchant-offers')">My Offers</a><span class="sep">›</span> <span>Back to School Electronics</span></div>
+<div class="ph">
+  <div>
+    <div style="font-size:12px;color:var(--t3);margin-bottom:4px;cursor:pointer" onclick="go('pulse-merchant-offers')">← My Offers</div>
+    <h1>Back to School Electronics</h1>
+    <p>Submitted Jul 15, 2025 · AED 80,000 budget</p>
+  </div>
+  <span class="badge bo2" style="background:var(--orangel);color:#92400e;font-size:12px;padding:5px 12px">In review</span>
+</div>
+<div class="ct">
+
+  <div class="card p-mb20">
+    <div style="padding:28px 32px">
+      <div style="display:flex;align-items:flex-start;gap:0">
+        ${[
+          {label:'Submitted',  sub:'Jul 15, 2025', state:'done'},
+          {label:'In review',  sub:'Lune reviewing', state:'cur'},
+          {label:'Live',       sub:'Pending',        state:'pending'},
+        ].map((s,i,a) => `
+          <div style="display:flex;flex-direction:column;align-items:center;flex:1;gap:8px">
+            <div style="width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid ${s.state==='done'?'var(--ac)':s.state==='cur'?'var(--orange)':'var(--bd)'};background:${s.state==='done'?'var(--ac)':s.state==='cur'?'var(--orangel)':'var(--sf)'}">
+              ${s.state==='done'?'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>':s.state==='cur'?'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#92400e" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>':'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--bd)" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg>'}
+            </div>
+            <div style="font-size:12px;font-weight:600;text-align:center;color:${s.state==='done'?'var(--ad)':s.state==='cur'?'#92400e':'var(--t3)'}">${s.label}</div>
+            <div style="font-size:11px;color:var(--t3)">${s.sub}</div>
+          </div>
+          ${i < a.length-1 ? `<div style="flex:1;height:2px;background:${s.state==='done'?'var(--ac)':'var(--bd)'};margin-top:17px"></div>` : ''}`
+        ).join('')}
+      </div>
+    </div>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="p-ch"><h3>Offer details</h3></div>
+      <div style="padding:0 16px">
+        ${[['Category','Electronics & Tech'],['Subcategories','Mobile & Tablets, Computers'],['Cashback rate','5%'],['Min / Max spend','AED 500 / No cap'],['Total budget','AED 80,000'],['Campaign period','Sep 1 – Oct 15, 2025'],['Audience','60-day · AED 500+ · 1+ txn']].map(([k,v])=>`
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--bl)">
+            <span style="font-size:12px;color:var(--t3)">${k}</span>
+            <span style="font-size:12.5px;font-weight:500">${v}</span>
+          </div>`).join('')}
+      </div>
+    </div>
+    <div class="card">
+      <div class="p-ch"><h3>What happens next</h3></div>
+      <div style="padding:18px;display:flex;flex-direction:column;gap:14px">
+        ${[
+          {n:1, color:'var(--al)', tc:'var(--ad)',  title:'Lune reviews your offer',       body:'We check eligibility, rates, and targeting parameters — usually within 2 business days.'},
+          {n:2, color:'var(--orangel)', tc:'#92400e', title:'You\'ll receive a contract by email', body:'A PDF agreement outlining terms, fees, and campaign details for your signature.'},
+          {n:3, color:'var(--bluel)', tc:'var(--blue)', title:'Lune pushes to partner banks', body:'Once signed, your offer is distributed to eligible bank customers via LuneHub.'},
+        ].map(s=>`
+          <div style="display:flex;gap:12px">
+            <div style="width:22px;height:22px;border-radius:50%;background:${s.color};color:${s.tc};font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0">${s.n}</div>
+            <div>
+              <div style="font-size:12.5px;font-weight:600;margin-bottom:2px">${s.title}</div>
+              <div style="font-size:12px;color:var(--t3)">${s.body}</div>
+            </div>
+          </div>`).join('')}
+      </div>
+    </div>
+  </div>
+
+</div>`;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+
+
+// ── Router ────────────────────────────────────────────────────────────────────
+go = function(pg, d) {
+  const pulsePages = {
+    'pulse':                         pgPulse,
+    'pulse-offers':                  pgPulseOffers,
+    'pulse-offer-detail':            () => { _actPageStep = 1; _actPageBrands = []; return (typeof pgPulseOfferDetail === 'function' ? pgPulseOfferDetail(d) : pgPulseOffers()); },
+    'pulse-activate':                () => (typeof pgPulseActivate === 'function' ? pgPulseActivate(d) : pgPulseOffers()),
+    'pulse-campaigns':               pgPulseCampaigns,
+    'pulse-campaign-detail':         () => pgPulseCampaignDetail(d),
+    'pulse-merchant':                pgPulseMerchant,
+    'pulse-merchant-offers':         pgPulseMerchantOffers,
+    'pulse-merchant-create':         pgPulseMerchantCreate,
+    'pulse-merchant-live-detail':    () => pgPulseMerchantLiveDetail(d),
+    'pulse-merchant-detail':         () => pgPulseMerchantDetail(d),
+  };
+  if (pulsePages[pg]) {
+    document.querySelectorAll('#snav a[data-p]').forEach(a => a.classList.toggle('active', a.dataset.p === pg));
+    window.scrollTo(0, 0);
+    Object.values(charts).forEach(c => { if (c && c.destroy) c.destroy(); });
+    charts = {};
+    document.getElementById('main-area').innerHTML = pulsePages[pg]();
+  }
+};
+
+go('pulse-merchant');
+
+
+// Version switcher
+(async()=>{
+  const sel=document.getElementById('vswitch');if(!sel)return;
+  const thisFile=location.pathname.split('/').pop()||'analytics-v1_6.html';
+  try{
+    const r=await fetch('versions.json?t='+Date.now());
+    const versions=await r.json();
+    if(versions.length<=1){sel.style.display='none';return}
+    sel.innerHTML=versions.map(v=>`<option value="${v.file}"${v.file===thisFile?' selected':''}>${v.version}</option>`).join('');
+  }catch(e){sel.style.display='none'}
+})();
+</script>
+
+<!-- ══════════════════════════════════════════════════════════
+     PULSE PAGE TEMPLATES  (rendered via pgPulse* functions)
+══════════════════════════════════════════════════════════ -->
+</body></html>
